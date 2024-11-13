@@ -24,7 +24,6 @@ public class TestDAOImpl implements TestDAO {
     }
 
     @Override
-    @Transactional
     public List<Question> getQuestions(Test test) {
         EntityManager em = entityManagerFactory.createEntityManager();
         CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();
@@ -37,28 +36,24 @@ public class TestDAOImpl implements TestDAO {
     }
 
     @Override
-    @Transactional
     public void add(Test object) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.persist(object);
     }
 
     @Override
-    @Transactional
     public void delete(Test object) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.remove(object);
     }
 
     @Override
-    @Transactional
     public Test get(Long objKey) {
         EntityManager em = entityManagerFactory.createEntityManager();
         return em.find(Test.class, objKey);
     }
 
     @Override
-    @Transactional
     public void update(Test object) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.merge(object);

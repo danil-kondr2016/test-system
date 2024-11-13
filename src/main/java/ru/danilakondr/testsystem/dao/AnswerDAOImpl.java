@@ -20,28 +20,24 @@ public class AnswerDAOImpl implements AnswerDAO {
     }
 
     @Override
-    @Transactional
     public void add(Answer object) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.persist(object);
     }
 
     @Override
-    @Transactional
     public void delete(Answer object) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.remove(object);
     }
 
     @Override
-    @Transactional
     public Answer get(Long objKey) {
         EntityManager em = entityManagerFactory.createEntityManager();
         return em.find(Answer.class, objKey);
     }
 
     @Override
-    @Transactional
     public void update(Answer object) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.merge(object);
