@@ -8,10 +8,10 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
-import ru.danilakondr.testsystem.data.Answer;
-import ru.danilakondr.testsystem.data.Participant;
+import ru.danilakondr.testsystem.data.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Repository
 public class ParticipantDAOImpl implements ParticipantDAO {
@@ -31,6 +31,25 @@ public class ParticipantDAOImpl implements ParticipantDAO {
         Predicate _testIdIs = cb.equal(root.get("participantId"), participant.getParticipantId());
         TypedQuery<Answer> query = em.createQuery(cq.where(_testIdIs));
         return query.getResultList();
+    }
+
+    @Override
+    public Stream<Participant> getAllConnectedParticipants(UserSession auth) {
+        EntityManager em = entityManagerFactory.createEntityManager();
+
+        // Check if user exists and is administrator
+        TypedQuery<User> userQuery = em.createQuery("FROM User WHERE userId=:id", User.class);
+        userQuery.setParameter("id", auth.getUserId());
+        User user = userQuery.getSingleResult();
+        if (user.getUserRole() != User.Role.ADMINISTRATOR)
+            throw new RuntimeException("Permission denied");
+
+        TypedQuery<Participant> participantQuery = em.createQuery(
+                "SELECT p FROM TestSession t INNER JOIN t.testSessionId p " +
+                        "WHERE t.testSessionState=:state",
+                Participant.class
+        ).setParameter("state", TestSession.State.ACTIVE);
+        return participantQuery.getResultStream();
     }
 
     @Override
