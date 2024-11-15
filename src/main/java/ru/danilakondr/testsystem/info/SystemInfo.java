@@ -1,5 +1,5 @@
 package ru.danilakondr.testsystem.info;
 
-// TODO implement
-public class SystemInfo {
-}
+public record SystemInfo(long activeSessionsCount,
+                         long activeTestSessionsCount,
+                         long totalParticipantsConnected) {}
