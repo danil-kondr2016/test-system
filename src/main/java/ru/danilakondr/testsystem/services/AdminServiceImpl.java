@@ -3,9 +3,7 @@ package ru.danilakondr.testsystem.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.danilakondr.testsystem.dao.ParticipantDAO;
 import ru.danilakondr.testsystem.dao.TestSessionDAO;
-import ru.danilakondr.testsystem.dao.UserDAO;
 import ru.danilakondr.testsystem.dao.UserSessionDAO;
-import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.info.SystemInfo;
 
