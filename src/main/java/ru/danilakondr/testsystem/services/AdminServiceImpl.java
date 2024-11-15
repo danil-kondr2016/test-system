@@ -2,12 +2,14 @@ package ru.danilakondr.testsystem.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.danilakondr.testsystem.dao.ParticipantDAO;
 import ru.danilakondr.testsystem.dao.TestSessionDAO;
 import ru.danilakondr.testsystem.dao.UserSessionDAO;
 import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.info.SystemInfo;
 
+@Service
 public class AdminServiceImpl extends UserServiceImpl implements AdminService {
     private UserSessionDAO userSessionDAO;
     private TestSessionDAO testSessionDAO;
