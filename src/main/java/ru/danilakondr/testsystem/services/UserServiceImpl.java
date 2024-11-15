@@ -64,6 +64,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void quitSesssion(UserSession session) {
+        userSessionDAO.delete(session);
+    }
+
+    @Override
     @Transactional
     public List<Test> getTests(UserSession session) {
         User user = userDAO.get(session.getUserId());

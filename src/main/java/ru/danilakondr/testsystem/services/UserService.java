@@ -11,6 +11,7 @@ public interface UserService {
     User register(String login, String email, String password);
     User find(String login);
     UserSession authenticate(User user, String password);
+    void quitSesssion(UserSession session);
     List<Test> getTests(UserSession session);
     List<TestSession> getTestSessions(UserSession session);
 }
