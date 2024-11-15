@@ -26,4 +26,16 @@ public class Participant {
     public String getName() {
         return name;
     }
+
+    public void setParticipantId(long participantId) {
+        this.participantId = participantId;
+    }
+
+    public void setTestSessionId(UUID testSessionId) {
+        this.testSessionId = testSessionId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
