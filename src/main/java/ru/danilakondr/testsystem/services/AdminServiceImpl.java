@@ -1,5 +1,6 @@
 package ru.danilakondr.testsystem.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.danilakondr.testsystem.dao.ParticipantDAO;
 import ru.danilakondr.testsystem.dao.TestSessionDAO;
@@ -29,6 +30,7 @@ public class AdminServiceImpl extends UserServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public SystemInfo getSystemInfo(UserSession auth) {
         return new SystemInfo(
                 userSessionDAO.getAllUserSessions(auth).count(),

@@ -1,5 +1,6 @@
 package ru.danilakondr.testsystem.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.danilakondr.testsystem.dao.UserDAO;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User register(String login, String email, String password) {
         if (userDAO.getByLogin(login) != null)
             throw new IllegalArgumentException("User with login " + login + " already exists");
@@ -48,6 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserSession authenticate(User user, String password) {
         if (user.getPassword().compareTo(password) == 0) {
             UserSession session = new UserSession();
@@ -61,6 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public List<Test> getTests(UserSession session) {
         User user = userDAO.get(session.getUserId());
         if (user == null)
@@ -70,6 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public List<TestSession> getTestSessions(UserSession session) {
         User user = userDAO.get(session.getUserId());
         if (user == null)
