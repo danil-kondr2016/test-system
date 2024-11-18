@@ -1,6 +1,7 @@
 package ru.danilakondr.testsystem.services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.danilakondr.testsystem.dao.QuestionDAO;
 import ru.danilakondr.testsystem.data.Question;
@@ -9,6 +10,7 @@ import ru.danilakondr.testsystem.data.Question;
 public class QuestionServiceImpl implements QuestionService {
     private QuestionDAO questionDAO;
 
+    @Autowired
     public void setQuestionDAO(QuestionDAO questionDAO) {
         this.questionDAO = questionDAO;
     }
