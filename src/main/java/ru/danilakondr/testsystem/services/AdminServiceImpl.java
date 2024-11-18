@@ -10,12 +10,11 @@ import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.info.SystemInfo;
 
 @Service
-public class AdminServiceImpl extends UserServiceImpl implements AdminService {
+public class AdminServiceImpl implements AdminService {
     private UserSessionDAO userSessionDAO;
     private TestSessionDAO testSessionDAO;
     private ParticipantDAO participantDAO;
 
-    @Override
     @Autowired
     public void setUserSessionDAO(UserSessionDAO userSessionDAO) {
         this.userSessionDAO = userSessionDAO;
