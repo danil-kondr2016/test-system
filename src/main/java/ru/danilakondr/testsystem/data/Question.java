@@ -1,11 +1,21 @@
 package ru.danilakondr.testsystem.data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Question {
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
     public enum Type {
         NUMBER_ENTRY,
         STRING_ENTRY,
@@ -26,44 +36,4 @@ public class Question {
 
     @OneToMany(cascade=CascadeType.ALL, mappedBy="questionId")
     private List<AnswerVariant> variants;
-
-    public long getQuestionId() {
-        return questionId;
-    }
-
-    public long getTestId() {
-        return testId;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setQuestionId(long questionId) {
-        this.questionId = questionId;
-    }
-
-    public void setTestId(long testId) {
-        this.testId = testId;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public List<AnswerVariant> getVariants() {
-        return variants;
-    }
-
-    public void setVariants(List<AnswerVariant> variants) {
-        this.variants = variants;
-    }
 }

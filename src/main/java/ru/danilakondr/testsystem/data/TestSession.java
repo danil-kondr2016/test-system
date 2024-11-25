@@ -1,5 +1,6 @@
 package ru.danilakondr.testsystem.data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.util.UUID;
 
 @Entity
 public class TestSession {
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
     public enum State {
         NOT_ACTIVE,
         ACTIVE,

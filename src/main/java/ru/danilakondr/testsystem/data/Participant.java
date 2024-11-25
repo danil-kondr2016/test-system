@@ -1,10 +1,18 @@
 package ru.danilakondr.testsystem.data;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Participant {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
@@ -14,28 +22,4 @@ public class Participant {
     private UUID testSessionId;
 
     private String name;
-
-    public long getParticipantId() {
-        return participantId;
-    }
-
-    public UUID getTestSessionId() {
-        return testSessionId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setParticipantId(long participantId) {
-        this.participantId = participantId;
-    }
-
-    public void setTestSessionId(UUID testSessionId) {
-        this.testSessionId = testSessionId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

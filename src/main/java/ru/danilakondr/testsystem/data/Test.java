@@ -1,10 +1,18 @@
 package ru.danilakondr.testsystem.data;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Test {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
@@ -15,28 +23,4 @@ public class Test {
     private long organizatorId;
 
     private String name;
-
-    public long getTestId() {
-        return testId;
-    }
-
-    public long getOrganizatorId() {
-        return organizatorId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setTestId(long testId) {
-        this.testId = testId;
-    }
-
-    public void setOrganizatorId(long organizatorId) {
-        this.organizatorId = organizatorId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

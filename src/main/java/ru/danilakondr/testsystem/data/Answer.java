@@ -1,8 +1,16 @@
 package ru.danilakondr.testsystem.data;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Answer {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
@@ -18,44 +26,4 @@ public class Answer {
 
     @ManyToOne
     private long variantId;
-
-    public long getAnswerId() {
-        return answerId;
-    }
-
-    public long getParticipantId() {
-        return participantId;
-    }
-
-    public long getQuestionId() {
-        return questionId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public long getVariantId() {
-        return variantId;
-    }
-
-    public void setAnswerId(long answerId) {
-        this.answerId = answerId;
-    }
-
-    public void setParticipantId(long participantId) {
-        this.participantId = participantId;
-    }
-
-    public void setQuestionId(long questionId) {
-        this.questionId = questionId;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setVariantId(long variantId) {
-        this.variantId = variantId;
-    }
 }
