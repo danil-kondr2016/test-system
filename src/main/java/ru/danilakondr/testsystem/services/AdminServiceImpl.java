@@ -5,20 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.danilakondr.testsystem.dao.ParticipantDAO;
 import ru.danilakondr.testsystem.dao.TestSessionDAO;
-import ru.danilakondr.testsystem.dao.UserSessionDAO;
-import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.info.SystemInfo;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-    private UserSessionDAO userSessionDAO;
     private TestSessionDAO testSessionDAO;
     private ParticipantDAO participantDAO;
-
-    @Autowired
-    public void setUserSessionDAO(UserSessionDAO userSessionDAO) {
-        this.userSessionDAO = userSessionDAO;
-    }
 
     @Autowired
     public void setTestSessionDAO(TestSessionDAO testSessionDAO) {
@@ -32,10 +24,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public SystemInfo getSystemInfo(UserSession auth) {
+    public SystemInfo getSystemInfo() {
         return new SystemInfo(
-                userSessionDAO.getAllUserSessions(auth).count(),
-                testSessionDAO.getAllActiveTestSessions(auth).count(),
-                participantDAO.getAllConnectedParticipants(auth).count());
+                testSessionDAO.getAllActiveTestSessions().count(),
+                participantDAO.getAllConnectedParticipants().count());
     }
 }

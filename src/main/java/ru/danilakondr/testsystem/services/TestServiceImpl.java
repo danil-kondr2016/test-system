@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.danilakondr.testsystem.dao.TestDAO;
 import ru.danilakondr.testsystem.data.Test;
-import ru.danilakondr.testsystem.data.UserSession;
+import ru.danilakondr.testsystem.data.User;
 
 @Service
 public class TestServiceImpl implements TestService {
@@ -18,9 +18,9 @@ public class TestServiceImpl implements TestService {
 
     @Override
     @Transactional
-    public Test create(UserSession session, String name) {
+    public Test create(User user, String name) {
         Test newTest = new Test();
-        newTest.setOrganizatorId(session.getUserId());
+        newTest.setOrganizatorId(user.getUserId());
         newTest.setName(name);
 
         testDAO.add(newTest);

@@ -43,12 +43,12 @@ public class TestSessionServiceImpl implements TestSessionService {
 
     @Override
     @Transactional
-    public TestSession create(UserSession auth, long testId) {
+    public TestSession create(User user, long testId) {
         Test test = testDAO.get(testId);
         if (test == null)
             return null;
 
-        if (test.getOrganizatorId() != auth.getUserId())
+        if (test.getOrganizatorId() != user.getUserId())
             throw new RuntimeException("Permission denied");
 
         TestSession session = new TestSession();

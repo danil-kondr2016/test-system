@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import ru.danilakondr.testsystem.data.Participant;
 import ru.danilakondr.testsystem.data.TestSession;
 import ru.danilakondr.testsystem.data.User;
-import ru.danilakondr.testsystem.data.UserSession;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,16 +39,8 @@ public class TestSessionDAOImpl implements TestSessionDAO {
     }
 
     @Override
-    public Stream<TestSession> getAllActiveTestSessions(UserSession auth) {
+    public Stream<TestSession> getAllActiveTestSessions() {
         EntityManager em = entityManagerFactory.createEntityManager();
-
-        // Check if user exists and is administrator
-        TypedQuery<User> userQuery = em.createQuery("FROM User WHERE userId=:id", User.class);
-        userQuery.setParameter("id", auth.getUserId());
-        User user = userQuery.getSingleResult();
-        if (user.getUserRole() != User.Role.ADMINISTRATOR)
-            throw new RuntimeException("Permission denied");
-
         TypedQuery<TestSession> testSessionQuery = em.createQuery(
                 "FROM TestSession WHERE testSessionState=:state",
                 TestSession.class).setParameter("state", TestSession.State.ACTIVE);

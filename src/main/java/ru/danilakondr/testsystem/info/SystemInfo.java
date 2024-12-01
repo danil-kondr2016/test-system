@@ -1,5 +1,4 @@
 package ru.danilakondr.testsystem.info;
 
-public record SystemInfo(long activeSessionsCount,
-                         long activeTestSessionsCount,
+public record SystemInfo(long activeTestSessionsCount,
                          long totalParticipantsConnected) {}

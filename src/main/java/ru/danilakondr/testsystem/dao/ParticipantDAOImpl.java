@@ -34,16 +34,8 @@ public class ParticipantDAOImpl implements ParticipantDAO {
     }
 
     @Override
-    public Stream<Participant> getAllConnectedParticipants(UserSession auth) {
+    public Stream<Participant> getAllConnectedParticipants() {
         EntityManager em = entityManagerFactory.createEntityManager();
-
-        // Check if user exists and is administrator
-        TypedQuery<User> userQuery = em.createQuery("FROM User WHERE userId=:id", User.class);
-        userQuery.setParameter("id", auth.getUserId());
-        User user = userQuery.getSingleResult();
-        if (user.getUserRole() != User.Role.ADMINISTRATOR)
-            throw new RuntimeException("Permission denied");
-
         TypedQuery<Participant> participantQuery = em.createQuery(
                 "SELECT p FROM TestSession t INNER JOIN t.testSessionId p " +
                         "WHERE t.testSessionState=:state",
