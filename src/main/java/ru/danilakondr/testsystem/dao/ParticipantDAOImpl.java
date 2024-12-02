@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.danilakondr.testsystem.data.*;
 
@@ -15,16 +16,12 @@ import java.util.stream.Stream;
 
 @Repository
 public class ParticipantDAOImpl implements ParticipantDAO {
-    private EntityManagerFactory entityManagerFactory;
-
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    @Autowired
+    private EntityManager em;
 
     @Override
     public List<Answer> getAnswers(Participant participant) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Answer> cq = cb.createQuery(Answer.class);
         Root<Answer> root = cq.from(Answer.class);
 
@@ -35,7 +32,6 @@ public class ParticipantDAOImpl implements ParticipantDAO {
 
     @Override
     public Stream<Participant> getAllConnectedParticipants() {
-        EntityManager em = entityManagerFactory.createEntityManager();
         TypedQuery<Participant> participantQuery = em.createQuery(
                 "SELECT p FROM TestSession t INNER JOIN t.testSessionId p " +
                         "WHERE t.testSessionState=:state",
@@ -46,25 +42,21 @@ public class ParticipantDAOImpl implements ParticipantDAO {
 
     @Override
     public void add(Participant object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.persist(object);
     }
 
     @Override
     public void delete(Participant object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.remove(object);
     }
 
     @Override
     public Participant get(Long objKey) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         return em.find(Participant.class, objKey);
     }
 
     @Override
     public void update(Participant object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.merge(object);
     }
 }

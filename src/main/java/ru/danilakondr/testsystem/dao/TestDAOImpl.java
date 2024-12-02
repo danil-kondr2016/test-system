@@ -14,17 +14,12 @@ import java.util.List;
 
 @Repository
 public class TestDAOImpl implements TestDAO {
-    private EntityManagerFactory entityManagerFactory;
-
     @Autowired
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    private EntityManager em;
 
     @Override
     public List<Question> getQuestions(Test test) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Question> cq = cb.createQuery(Question.class);
         Root<Question> root = cq.from(Question.class);
 
@@ -35,25 +30,21 @@ public class TestDAOImpl implements TestDAO {
 
     @Override
     public void add(Test object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.persist(object);
     }
 
     @Override
     public void delete(Test object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.remove(object);
     }
 
     @Override
     public Test get(Long objKey) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         return em.find(Test.class, objKey);
     }
 
     @Override
     public void update(Test object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.merge(object);
     }
 }

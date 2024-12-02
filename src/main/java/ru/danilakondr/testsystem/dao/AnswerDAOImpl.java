@@ -8,34 +8,26 @@ import ru.danilakondr.testsystem.data.Answer;
 
 @Repository
 public class AnswerDAOImpl implements AnswerDAO {
-    private EntityManagerFactory entityManagerFactory;
-
     @Autowired
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    private EntityManager em;
 
     @Override
     public void add(Answer object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.persist(object);
     }
 
     @Override
     public void delete(Answer object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.remove(object);
     }
 
     @Override
     public Answer get(Long objKey) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         return em.find(Answer.class, objKey);
     }
 
     @Override
     public void update(Answer object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.merge(object);
     }
 }

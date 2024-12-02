@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.danilakondr.testsystem.data.Test;
@@ -17,18 +18,14 @@ import ru.danilakondr.testsystem.data.User;
 import java.util.List;
 
 @Repository
+@Transactional
 public class UserDAOImpl implements UserDAO {
-    private EntityManagerFactory entityManagerFactory;
-
     @Autowired
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    private EntityManager em;
 
     @Override
     public User getByLogin(String login) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<User> cq = cb.createQuery(User.class);
         Root<User> root = cq.from(User.class);
 
@@ -44,8 +41,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<Test> getTests(User user) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Test> cq = cb.createQuery(Test.class);
         Root<Test> root = cq.from(Test.class);
 
@@ -56,7 +52,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<TestSession> getTestSessions(User user) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         TypedQuery<TestSession> query = em.createQuery(
                 "SELECT s FROM Test t INNER JOIN TestSession t.testId s WHERE t.userId=:id",
                 TestSession.class
@@ -67,26 +62,26 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    @Transactional
     public void add(User object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.persist(object);
     }
 
     @Override
+    @Transactional
     public void delete(User object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.remove(object);
     }
 
     @Override
+    @Transactional
     public User get(Long objKey) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         return em.find(User.class, objKey);
     }
 
     @Override
+    @Transactional
     public void update(User object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.merge(object);
     }
 }

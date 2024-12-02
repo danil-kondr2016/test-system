@@ -19,17 +19,12 @@ import java.util.stream.Stream;
 
 @Repository
 public class TestSessionDAOImpl implements TestSessionDAO {
-    private EntityManagerFactory entityManagerFactory;
-
     @Autowired
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    private EntityManager em;
 
     @Override
     public List<Participant> getParticipants(TestSession session) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Participant> cq = cb.createQuery(Participant.class);
         Root<Participant> root = cq.from(Participant.class);
 
@@ -40,7 +35,6 @@ public class TestSessionDAOImpl implements TestSessionDAO {
 
     @Override
     public Stream<TestSession> getAllActiveTestSessions() {
-        EntityManager em = entityManagerFactory.createEntityManager();
         TypedQuery<TestSession> testSessionQuery = em.createQuery(
                 "FROM TestSession WHERE testSessionState=:state",
                 TestSession.class).setParameter("state", TestSession.State.ACTIVE);
@@ -49,25 +43,21 @@ public class TestSessionDAOImpl implements TestSessionDAO {
 
     @Override
     public void add(TestSession object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.persist(object);
     }
 
     @Override
     public void delete(TestSession object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.remove(object);
     }
 
     @Override
     public TestSession get(UUID objKey) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         return em.find(TestSession.class, objKey);
     }
 
     @Override
     public void update(TestSession object) {
-        EntityManager em = entityManagerFactory.createEntityManager();
         em.refresh(object);
     }
 }
