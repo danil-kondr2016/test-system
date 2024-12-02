@@ -106,10 +106,10 @@ public class TestSessionServiceImpl implements TestSessionService {
                 break;
             }
         }
-        return new Report.Answer(session.getTestId(),
-                answer.getQuestionId(),
-                "",
-                answer.getVariantId(),
+        return new Report.Answer(session.getTest().getTestId(),
+                answer.getQuestion().getQuestionId(),
+                answer.getQuestion().getText(),
+                answer.getVariant().getVariantId(),
                 answer.getText(),
                 correct);
     }
