@@ -13,6 +13,7 @@ import ru.danilakondr.testsystem.data.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -40,8 +41,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User find(String login) {
-        return userDAO.getByLogin(login);
+    public Optional<User> find(String login) {
+        return Optional.ofNullable(userDAO.getByLogin(login));
     }
 
     @Override
@@ -58,10 +59,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = find(username);
-        if (user == null)
-            throw new UsernameNotFoundException(username);
-
+        UserDetails user = find(username).orElseThrow(() -> new UsernameNotFoundException(username));
         return user;
     }
 }

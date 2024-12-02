@@ -6,10 +6,11 @@ import ru.danilakondr.testsystem.data.TestSession;
 import ru.danilakondr.testsystem.data.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
     User register(String login, String email, String password);
-    User find(String login);
+    Optional<User> find(String login);
     List<Test> getTests(User user);
     List<TestSession> getTestSessions(User user);
 }
