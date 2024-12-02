@@ -1,6 +1,7 @@
 package ru.danilakondr.testsystem.data;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,7 +37,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(userRole.name()));
+        return userRole.getAuthorities();
     }
 
     @Override
@@ -66,7 +67,20 @@ public class User implements UserDetails {
 
     @JsonFormat(shape=JsonFormat.Shape.STRING)
     public enum Role {
-        ORGANIZATOR,
-        ADMINISTRATOR,
+        ORGANIZATOR(List.of(new SimpleGrantedAuthority("ORGANIZATOR"))),
+        ADMINISTRATOR(List.of(new SimpleGrantedAuthority("ORGANIZATOR"), new SimpleGrantedAuthority("ADMINISTRATOR"))),
+        ;
+
+        @JsonIgnore
+        private transient Collection<SimpleGrantedAuthority> authorities;
+
+        public Collection<SimpleGrantedAuthority> getAuthorities() {
+            return authorities;
+        }
+
+        private Role(Collection<SimpleGrantedAuthority> authorities)
+        {
+            this.authorities = authorities;
+        }
     }
 }
