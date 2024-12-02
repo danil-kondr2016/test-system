@@ -2,6 +2,7 @@ package ru.danilakondr.testsystem.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,10 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
     private UserDAO userDAO;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -31,9 +34,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public User register(String login, String email, String password) {
-        if (userDAO.getByLogin(login) != null)
-            throw new IllegalArgumentException("User with login " + login + " already exists");
-
         User user = new User();
         user.setLogin(login);
         user.setEmail(email);
