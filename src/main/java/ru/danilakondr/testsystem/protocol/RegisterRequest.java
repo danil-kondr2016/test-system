@@ -3,6 +3,6 @@ package ru.danilakondr.testsystem.protocol;
 import lombok.*;
 
 @Data
-public class RegisterBody {
+public class RegisterRequest {
     String login, email, password;
 }
