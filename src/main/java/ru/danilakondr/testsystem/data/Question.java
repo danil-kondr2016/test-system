@@ -28,12 +28,12 @@ public class Question {
     private long questionId;
 
     @ManyToOne(optional=false)
-    private long testId;
+    private Test test;
 
     private Type type;
 
     private String text;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="questionId")
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="question")
     private List<AnswerVariant> variants;
 }

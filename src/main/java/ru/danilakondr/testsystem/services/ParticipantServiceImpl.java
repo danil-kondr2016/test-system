@@ -7,8 +7,7 @@ import ru.danilakondr.testsystem.dao.AnswerDAO;
 import ru.danilakondr.testsystem.dao.ParticipantDAO;
 import ru.danilakondr.testsystem.data.Answer;
 import ru.danilakondr.testsystem.data.Participant;
-
-import java.util.UUID;
+import ru.danilakondr.testsystem.data.TestSession;
 
 @Service
 public class ParticipantServiceImpl implements ParticipantService {
@@ -27,9 +26,9 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     @Transactional
-    public Participant create(UUID testSessionID, String name) {
+    public Participant create(TestSession testSession, String name) {
         Participant participant = new Participant();
-        participant.setTestSessionId(testSessionID);
+        participant.setTestSession(testSession);
         participant.setName(name);
 
         participantDAO.add(participant);
@@ -50,15 +49,14 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     @Transactional
-    public void remove(long participantId) {
-        Participant participant = participantDAO.get(participantId);
+    public void remove(Participant participant) {
         participantDAO.delete(participant);
     }
 
     @Override
     @Transactional
-    public void putAnswer(long participantId, Answer answer) {
-        answer.setParticipantId(participantId);
+    public void putAnswer(Participant participant, Answer answer) {
+        answer.setParticipant(participant);
         answerDAO.add(answer);
     }
 }

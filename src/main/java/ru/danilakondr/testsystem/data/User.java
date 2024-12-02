@@ -20,19 +20,21 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @Column(nullable = false)
     private long userId;
 
-    @Column(name="login", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String login;
 
-    @Column(name="email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name="password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "userRole", nullable = false)
+    @Column(name = "role", nullable = false)
+    @Builder.Default
     private Role userRole = Role.ORGANIZATOR;
 
     @Override

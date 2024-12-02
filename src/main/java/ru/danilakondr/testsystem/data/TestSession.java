@@ -19,7 +19,7 @@ public class TestSession {
     private UUID testSessionId;
 
     @ManyToOne
-    private long testId;
+    private Test test;
 
     private State testSessionState;
 

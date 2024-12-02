@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.danilakondr.testsystem.dao.QuestionDAO;
 import ru.danilakondr.testsystem.data.Question;
+import ru.danilakondr.testsystem.data.Test;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -17,11 +18,11 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public Question create(long testId, Question.Type type, String text) {
+    public Question create(Test test, Question.Type type, String text) {
         Question question = new Question();
         question.setType(type);
         question.setText(text);
-        question.setTestId(testId);
+        question.setTest(test);
 
         questionDAO.add(question);
         return question;
@@ -41,8 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public void remove(long questionId) {
-        Question question = questionDAO.get(questionId);
+    public void remove(Question question) {
         questionDAO.delete(question);
     }
 }

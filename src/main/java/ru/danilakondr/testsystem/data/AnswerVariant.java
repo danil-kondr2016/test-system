@@ -17,7 +17,7 @@ public class AnswerVariant {
     private long variantId;
 
     @ManyToOne(optional=false)
-    private long questionId;
+    private Question question;
 
     private String text;
 

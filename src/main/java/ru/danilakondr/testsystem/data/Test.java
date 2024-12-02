@@ -19,8 +19,7 @@ public class Test {
     private long testId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="userId")
-    private long organizatorId;
+    private User organizator;
 
     private String name;
 }

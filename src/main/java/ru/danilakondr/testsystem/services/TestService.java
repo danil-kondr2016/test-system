@@ -7,5 +7,5 @@ public interface TestService {
     Test create(User user, String name);
     Test get(long testId);
     void update(Test test);
-    void remove(long testId);
+    void remove(Test test);
 }

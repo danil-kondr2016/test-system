@@ -20,7 +20,7 @@ public class TestServiceImpl implements TestService {
     @Transactional
     public Test create(User user, String name) {
         Test newTest = new Test();
-        newTest.setOrganizatorId(user.getUserId());
+        newTest.setOrganizator(user);
         newTest.setName(name);
 
         testDAO.add(newTest);
@@ -41,8 +41,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     @Transactional
-    public void remove(long testId) {
-        Test test = testDAO.get(testId);
+    public void remove(Test test) {
         testDAO.delete(test);
     }
 }

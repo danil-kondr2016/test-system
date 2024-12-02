@@ -2,13 +2,12 @@ package ru.danilakondr.testsystem.services;
 
 import ru.danilakondr.testsystem.data.Answer;
 import ru.danilakondr.testsystem.data.Participant;
-
-import java.util.UUID;
+import ru.danilakondr.testsystem.data.TestSession;
 
 public interface ParticipantService {
-    Participant create(UUID testSessionID, String name);
+    Participant create(TestSession testSession, String name);
     Participant get(long participantId);
     void update(Participant participant);
-    void remove(long participantId);
-    void putAnswer(long participantId, Answer answer);
+    void remove(Participant participant);
+    void putAnswer(Participant participant, Answer answer);
 }

@@ -17,13 +17,13 @@ public class Answer {
     private long answerId;
 
     @ManyToOne(optional=false)
-    private long participantId;
+    private Participant participant;
 
     @ManyToOne(optional=false)
-    private long questionId;
+    private Question question;
 
     private String text;
 
-    @ManyToOne
-    private long variantId;
+    @ManyToOne(optional = true)
+    private AnswerVariant variant;
 }

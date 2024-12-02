@@ -19,7 +19,7 @@ public class Participant {
     private long participantId;
 
     @ManyToOne(optional=false)
-    private UUID testSessionId;
+    private TestSession testSession;
 
     private String name;
 }
