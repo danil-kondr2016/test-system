@@ -3,6 +3,9 @@ package ru.danilakondr.testsystem.services;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
 import ru.danilakondr.testsystem.jwt.JwtAuthentication;
 import ru.danilakondr.testsystem.protocol.AuthorizeRequest;
@@ -23,10 +26,15 @@ public class AuthService {
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProvider jwtProvider;
 
+    @Autowired
+    @Lazy
+    private PasswordEncoder encoder;
+
     public JwtResponse login(@NonNull AuthorizeRequest authRequest) {
         final User user = userService.find(authRequest.getLogin())
                 .orElseThrow(() -> new InvalidCredentialsException("INVALID_CREDENTIALS"));
-        if (user.getPassword().equals(authRequest.getPassword())) {
+
+        if (encoder.matches(authRequest.getPassword(), user.getPassword())) {
             final String accessToken = jwtProvider.generateAccessToken(user);
             final String refreshToken = jwtProvider.generateRefreshToken(user);
             refreshStorage.put(user.getLogin(), refreshToken);
