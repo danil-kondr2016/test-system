@@ -69,6 +69,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((req) -> req
                 .requestMatchers("/api/register").permitAll()
                 .requestMatchers("/api/login").permitAll()
+                .requestMatchers("/api/logout").authenticated()
                 .requestMatchers("/api/changePassword").authenticated()
                 .requestMatchers("/api/requestPasswordReset").authenticated()
                 .requestMatchers("/api/resetPassword").authenticated()
