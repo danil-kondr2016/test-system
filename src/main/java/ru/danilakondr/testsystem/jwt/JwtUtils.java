@@ -10,7 +10,7 @@ public final class JwtUtils {
 
     public static JwtAuthentication generate(Claims claims) {
         final JwtAuthentication jwtInfoToken = new JwtAuthentication();
-        jwtInfoToken.setRole(claims.get("role", User.Role.class));
+        jwtInfoToken.setRole(User.Role.fromName((String) claims.get("role")));
         jwtInfoToken.setUserName(claims.getSubject());
         return jwtInfoToken;
     }

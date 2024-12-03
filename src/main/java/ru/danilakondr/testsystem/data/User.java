@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Builder
@@ -76,12 +77,20 @@ public class User implements UserDetails {
         @JsonIgnore
         private transient Collection<SimpleGrantedAuthority> authorities;
 
+        @JsonIgnore
+        private static final Map<String, Role> values = Map.of(
+                ORGANIZATOR.name(), ORGANIZATOR,
+                ADMINISTRATOR.name(), ADMINISTRATOR);
+
+        public static Role fromName(String name) {
+            return values.get(name);
+        }
+
         public Collection<SimpleGrantedAuthority> getAuthorities() {
             return authorities;
         }
 
-        private Role(Collection<SimpleGrantedAuthority> authorities)
-        {
+        private Role(Collection<SimpleGrantedAuthority> authorities) {
             this.authorities = authorities;
         }
     }
