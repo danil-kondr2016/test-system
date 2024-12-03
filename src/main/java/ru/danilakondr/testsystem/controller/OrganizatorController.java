@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
+import ru.danilakondr.testsystem.jwt.JwtAuthentication;
 import ru.danilakondr.testsystem.protocol.*;
 import ru.danilakondr.testsystem.services.AuthService;
 import ru.danilakondr.testsystem.services.UserService;
@@ -60,6 +61,19 @@ public class OrganizatorController {
         }
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(403).body(new ErrorResponse("USER_ALREADY_EXISTS"));
+        }
+    }
+
+    @PostMapping("/api/changePassword")
+    public ResponseEntity<Response> changePassword(@RequestBody ChangePasswordRequest request) {
+        final JwtAuthentication auth = authService.getAuthInfo();
+        final User user = userService.find(auth.getUserName()).orElseThrow(() -> new IllegalStateException("Non-authenticated user"));
+        if (userService.validate(user, request.getOldPassword())) {
+            userService.changePassword(user, request.getNewPassword());
+            return ResponseEntity.status(204).body(null);
+        }
+        else {
+            return ResponseEntity.status(400).body(new ErrorResponse("INVALID_CREDENTIALS"));
         }
     }
 }
