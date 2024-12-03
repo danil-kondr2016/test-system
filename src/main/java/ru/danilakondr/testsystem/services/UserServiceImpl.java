@@ -50,6 +50,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public boolean validate(User user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public void changePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+    }
+
+    @Override
     @Transactional
     public List<Test> getTests(User user) {
         return userDAO.getTests(user);
