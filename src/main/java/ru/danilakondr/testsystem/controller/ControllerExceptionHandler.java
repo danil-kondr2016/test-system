@@ -12,6 +12,7 @@ import ru.danilakondr.testsystem.protocol.ErrorResponse;
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     private static final ErrorResponse INVALID_CREDENTIALS = new ErrorResponse("INVALID_CREDENTIALS");
+    private static final ErrorResponse INVALID_REQUEST = new ErrorResponse("INVALID_REQUEST");
 
     @ExceptionHandler
     public ResponseEntity<?> handleInvalidCredentialsException(InvalidCredentialsException e, WebRequest req) {
@@ -21,5 +22,10 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException e, WebRequest req) {
         return ResponseEntity.status(403).body(INVALID_CREDENTIALS);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e, WebRequest req) {
+        return ResponseEntity.status(400).body(INVALID_REQUEST);
     }
 }
