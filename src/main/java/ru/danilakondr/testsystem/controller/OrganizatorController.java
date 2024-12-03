@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.danilakondr.testsystem.data.User;
@@ -53,5 +54,13 @@ public class OrganizatorController {
         else {
             return ResponseEntity.status(400).body(new ErrorResponse("INVALID_CREDENTIALS"));
         }
+    }
+
+    @GetMapping("/api/logout")
+    public ResponseEntity<Response> logout()
+    {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        userService.logout((UserSession) auth.getPrincipal());
+        return ResponseEntity.status(204).body(null);
     }
 }
