@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class JwtResponse extends Response {
-    private String accessToken, refreshToken;
+public class SessionKeyResponse extends Response {
+    private String sessionKey;
 }

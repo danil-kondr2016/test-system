@@ -9,18 +9,25 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.danilakondr.testsystem.dao.UserDAO;
+import ru.danilakondr.testsystem.dao.UserSessionDAO;
 import ru.danilakondr.testsystem.data.Test;
 import ru.danilakondr.testsystem.data.TestSession;
 import ru.danilakondr.testsystem.data.User;
+import ru.danilakondr.testsystem.data.UserSession;
+import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
     private UserDAO userDAO;
+
+    @Autowired
+    private UserSessionDAO userSessionDAO;
 
     @Autowired
     @Lazy
@@ -52,6 +59,57 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean validate(User user, String password) {
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public UserSession login(String login, String password) {
+        Optional<User> user = find(login);
+        if (user.isEmpty()) {
+            throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+        }
+
+        if (validate(user.get(), password)) {
+            LocalDateTime loginDate = LocalDateTime.now();
+
+            UserSession session = new UserSession();
+            session.setUser(user.get());
+            session.setLoginDate(loginDate);
+            session.setExpires(loginDate.plusDays(30));
+            userSessionDAO.add(session);
+
+            return session;
+        }
+        else {
+            throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+        }
+    }
+
+    @Override
+    public Optional<UserSession> authenticate(UserSession session) {
+        if (userSessionDAO.get(session.getSessionId()) == null)
+            return Optional.empty();
+
+        // Remove outdated session
+        if (LocalDateTime.now().isAfter(session.getExpires())) {
+            logout(session);
+            return Optional.empty();
+        }
+
+        return Optional.of(session);
+    }
+
+    @Override
+    public Optional<UserSession> authenticate(UUID sessionId) {
+        UserSession session = userSessionDAO.get(sessionId);
+        if (session == null)
+            return Optional.empty();
+
+        return authenticate(session);
+    }
+
+    @Override
+    public void logout(UserSession session) {
+        userSessionDAO.delete(session);
     }
 
     @Override

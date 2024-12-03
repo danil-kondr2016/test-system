@@ -22,7 +22,7 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.danilakondr.testsystem.jwt.JwtFilter;
+import ru.danilakondr.testsystem.auth.AuthFilter;
 import ru.danilakondr.testsystem.services.UserService;
 
 import javax.sql.DataSource;
@@ -37,7 +37,7 @@ public class SecurityConfig {
     @Autowired
     private UserService service;
 
-    private final JwtFilter jwtFilter;
+    private final AuthFilter authFilter;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -82,7 +82,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/report/*").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/admin/systemInfo").hasAuthority("ADMINISTRATOR")
                 .anyRequest().permitAll()
-        ).addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        ).addFilterAfter(authFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

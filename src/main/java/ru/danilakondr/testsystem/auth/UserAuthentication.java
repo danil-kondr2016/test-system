@@ -1,32 +1,32 @@
-package ru.danilakondr.testsystem.jwt;
+package ru.danilakondr.testsystem.auth;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.danilakondr.testsystem.data.User;
+import ru.danilakondr.testsystem.data.UserSession;
 
 import java.util.Collection;
 
 @Getter
 @Setter
-public class JwtAuthentication implements Authentication {
+public class UserAuthentication implements Authentication {
     private boolean authenticated;
-    private String userName;
-    private User.Role role;
+    private UserSession principal;
+
+    public UserAuthentication(UserSession session) {
+        this.principal = session;
+    }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() { return role.getAuthorities(); }
+    public Collection<? extends GrantedAuthority> getAuthorities() { return principal.getUser().getAuthorities(); }
 
     @Override
     public Object getCredentials() { return null; }
 
     @Override
     public Object getDetails() { return null; }
-
-    @Override
-    public Object getPrincipal() { return userName; }
 
     @Override
     public boolean isAuthenticated() { return authenticated; }
@@ -37,6 +37,6 @@ public class JwtAuthentication implements Authentication {
     }
 
     @Override
-    public String getName() { return userName; }
+    public String getName() { return principal.getUser().getUsername(); }
 
 }

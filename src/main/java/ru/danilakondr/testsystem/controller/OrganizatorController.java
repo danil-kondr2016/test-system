@@ -2,51 +2,27 @@ package ru.danilakondr.testsystem.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.danilakondr.testsystem.data.User;
+import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
-import ru.danilakondr.testsystem.jwt.JwtAuthentication;
 import ru.danilakondr.testsystem.protocol.*;
-import ru.danilakondr.testsystem.services.AuthService;
 import ru.danilakondr.testsystem.services.UserService;
-
 
 @Controller
 @RequiredArgsConstructor
 public class OrganizatorController {
-    private final AuthService authService;
     private final UserService userService;
 
     @PostMapping("/api/login")
     public ResponseEntity<Response> authorize(@RequestBody AuthorizeRequest req) {
         try {
-            final JwtResponse body = authService.login(req);
-            return ResponseEntity.ok(body);
-        }
-        catch (InvalidCredentialsException e) {
-            return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
-        }
-    }
-
-    @PostMapping("/api/login/token")
-    public ResponseEntity<Response> getNewAccessToken(@RequestBody RefreshJwtRequest request) {
-        try {
-            final JwtResponse token = authService.getAccessToken(request.getRefreshToken());
-            return ResponseEntity.ok(token);
-        }
-        catch (InvalidCredentialsException e) {
-            return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
-        }
-    }
-
-    @PostMapping("/api/login/refresh")
-    public ResponseEntity<Response> getNewRefreshToken(@RequestBody RefreshJwtRequest request) {
-        try {
-            final JwtResponse token = authService.refresh(request.getRefreshToken());
-            return ResponseEntity.ok(token);
+            UserSession session = userService.login(req.getLogin(), req.getPassword());
+            return ResponseEntity.ok(new SessionKeyResponse(session.getSessionId().toString()));
         }
         catch (InvalidCredentialsException e) {
             return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
@@ -66,8 +42,10 @@ public class OrganizatorController {
 
     @PostMapping("/api/changePassword")
     public ResponseEntity<Response> changePassword(@RequestBody ChangePasswordRequest request) {
-        final JwtAuthentication auth = authService.getAuthInfo();
-        final User user = userService.find(auth.getUserName()).orElseThrow(() -> new IllegalStateException("Non-authenticated user"));
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final UserSession principal = (UserSession) auth.getPrincipal();
+        final User user = principal.getUser();
+
         if (userService.validate(user, request.getOldPassword())) {
             userService.changePassword(user, request.getNewPassword());
             return ResponseEntity.status(204).body(null);
