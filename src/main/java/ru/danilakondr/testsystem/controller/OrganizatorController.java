@@ -21,13 +21,8 @@ public class OrganizatorController {
 
     @PostMapping("/api/login")
     public ResponseEntity<Response> authorize(@RequestBody AuthorizeRequest req) {
-        try {
-            UserSession session = userService.login(req.getLogin(), req.getPassword());
-            return ResponseEntity.ok(new SessionKeyResponse(session.getSessionId().toString()));
-        }
-        catch (InvalidCredentialsException e) {
-            return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
-        }
+        UserSession session = userService.login(req.getLogin(), req.getPassword());
+        return ResponseEntity.ok(new SessionKeyResponse(session.getSessionId().toString()));
     }
 
     @PostMapping("/api/register")
@@ -47,13 +42,8 @@ public class OrganizatorController {
         final UserSession principal = (UserSession) auth.getPrincipal();
         final User user = principal.getUser();
 
-        if (userService.validate(user, request.getOldPassword())) {
-            userService.changePassword(user, request.getNewPassword());
-            return ResponseEntity.status(204).body(null);
-        }
-        else {
-            return ResponseEntity.status(400).body(new ErrorResponse("INVALID_CREDENTIALS"));
-        }
+        userService.changePassword(user, request.getNewPassword());
+        return ResponseEntity.status(204).body(null);
     }
 
     @GetMapping("/api/logout")
