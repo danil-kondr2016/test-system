@@ -1,16 +1,19 @@
 package ru.danilakondr.testsystem.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.danilakondr.testsystem.data.PasswordResetToken;
 import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.data.UserSession;
-import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
 import ru.danilakondr.testsystem.protocol.*;
 import ru.danilakondr.testsystem.services.UserService;
 
@@ -18,6 +21,11 @@ import ru.danilakondr.testsystem.services.UserService;
 @RequiredArgsConstructor
 public class OrganizatorController {
     private final UserService userService;
+
+    private final JavaMailSender emailSender;
+
+    @Value("${spring.mail.username}")
+    private String from;
 
     @PostMapping("/api/login")
     public ResponseEntity<Response> authorize(@RequestBody AuthorizeRequest req) {
@@ -50,9 +58,31 @@ public class OrganizatorController {
     public ResponseEntity<Response> logout()
     {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        userService.logout((UserSession) auth.getPrincipal());
+        final UserSession session = (UserSession) auth.getPrincipal();
+        userService.logout(session.getSessionId());
         return ResponseEntity.status(204).body(null);
     }
 
-    // TODO implement sending of emails from the application to reset password
+    @PostMapping("/api/requestPasswordReset")
+    public ResponseEntity<Response> requestPasswordReset(@RequestBody PasswordResetKeyRequest request) {
+        PasswordResetToken token = userService.requestPasswordReset(request.getEmail());
+
+        String messageText = "Высылаем ключ восстановления пароля:\n\n" +
+                token.getResetTokenId().toString() + "\n\n" +
+                "Ключ будет действовать до: " + token.getExpires().toString();
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(request.getEmail());
+        message.setSubject("Восстановление пароля");
+        message.setText(messageText);
+        emailSender.send(message);
+        return ResponseEntity.status(204).body(null);
+    }
+
+    @PostMapping("/api/resetPassword")
+    public ResponseEntity<Response> resetPassword(@RequestBody PasswordResetRequest request) {
+        userService.resetPassword(request.getResetKey(), request.getNewPassword());
+        return ResponseEntity.status(204).body(null);
+    }
 }
