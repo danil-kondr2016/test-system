@@ -53,4 +53,6 @@ public class OrganizatorController {
         userService.logout((UserSession) auth.getPrincipal());
         return ResponseEntity.status(204).body(null);
     }
+
+    // TODO implement sending of emails from the application to reset password
 }
