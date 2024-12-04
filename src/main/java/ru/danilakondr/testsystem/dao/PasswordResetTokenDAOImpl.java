@@ -2,10 +2,12 @@ package ru.danilakondr.testsystem.dao;
 
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ru.danilakondr.testsystem.data.PasswordResetToken;
 
 import java.util.UUID;
 
+@Repository
 public class PasswordResetTokenDAOImpl implements PasswordResetTokenDAO {
     @Autowired
     private EntityManager em;
