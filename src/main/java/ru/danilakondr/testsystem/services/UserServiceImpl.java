@@ -54,12 +54,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<User> find(String login) {
-        Optional<User> user;
+        return Optional.ofNullable(userDAO.getByLogin(login));
+    }
 
-        user = Optional.ofNullable(userDAO.getByLogin(login));
-        if (user.isEmpty())
-            user = Optional.ofNullable(userDAO.getByEmail(login));
-        return user;
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(userDAO.getByEmail(email));
     }
 
     @Override
@@ -125,10 +125,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public PasswordResetToken requestPasswordReset(String identifier) {
-        Optional<User> user = find(identifier);
+    public PasswordResetToken requestPasswordReset(String email) {
+        Optional<User> user = findByEmail(email);
         if (user.isEmpty()) {
-            throw new UsernameNotFoundException(identifier);
+            throw new InvalidCredentialsException(email);
         }
 
         PasswordResetToken token = new PasswordResetToken(user.get());
@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = Optional.ofNullable(userDAO.getByLogin(username)).orElseThrow(() -> new UsernameNotFoundException(username));
+        UserDetails user = find(username).orElseThrow(() -> new UsernameNotFoundException(username));
         return user;
     }
 }

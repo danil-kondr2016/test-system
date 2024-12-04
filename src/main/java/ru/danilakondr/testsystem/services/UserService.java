@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface UserService extends UserDetailsService {
     User register(String login, String email, String password);
     Optional<User> find(String login);
+    Optional<User> findByEmail(String email);
     boolean validate(User user, String password);
     void changePassword(User user, String password);
 
