@@ -8,12 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.danilakondr.testsystem.dao.PasswordResetTokenDAO;
 import ru.danilakondr.testsystem.dao.UserDAO;
 import ru.danilakondr.testsystem.dao.UserSessionDAO;
-import ru.danilakondr.testsystem.data.Test;
-import ru.danilakondr.testsystem.data.TestSession;
-import ru.danilakondr.testsystem.data.User;
-import ru.danilakondr.testsystem.data.UserSession;
+import ru.danilakondr.testsystem.data.*;
 import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
 
 import java.time.LocalDateTime;
@@ -28,6 +26,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserSessionDAO userSessionDAO;
+
+    @Autowired
+    private PasswordResetTokenDAO passwordResetTokenDAO;
 
     @Autowired
     @Lazy
@@ -53,7 +54,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<User> find(String login) {
-        return Optional.ofNullable(userDAO.getByLogin(login));
+        Optional<User> user;
+
+        user = Optional.ofNullable(userDAO.getByLogin(login));
+        if (user.isEmpty())
+            user = Optional.ofNullable(userDAO.getByEmail(login));
+        return user;
     }
 
     @Override
@@ -119,6 +125,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
+    public PasswordResetToken requestPasswordReset(String identifier) {
+        Optional<User> user = find(identifier);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(identifier);
+        }
+
+        PasswordResetToken token = new PasswordResetToken(user.get());
+        passwordResetTokenDAO.add(token);
+        return token;
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(PasswordResetToken token, String password) {
+        if (LocalDateTime.now().isAfter(token.getExpires())) {
+            passwordResetTokenDAO.delete(token);
+            throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+        }
+
+        token.getUser().setPassword(passwordEncoder.encode(password));
+    }
+
+    @Override
+    @Transactional
     public List<Test> getTests(User user) {
         return userDAO.getTests(user);
     }
@@ -131,7 +161,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = find(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        UserDetails user = Optional.ofNullable(userDAO.getByLogin(username)).orElseThrow(() -> new UsernameNotFoundException(username));
         return user;
     }
 }
