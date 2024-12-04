@@ -1,5 +1,6 @@
 package ru.danilakondr.testsystem.services;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -113,9 +114,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return authenticate(session);
     }
 
-    @Override
-    public void logout(UserSession session) {
+    private void logout(UserSession session) {
         userSessionDAO.delete(session);
+    }
+
+    @Override
+    public void logout(UUID sessionId) {
+        UserSession session = userSessionDAO.get(sessionId);
+        if (session == null)
+            throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+        logout(session);
     }
 
     @Override
@@ -138,7 +146,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void changePassword(PasswordResetToken token, String password) {
+    public void resetPassword(String tokenId, String password) {
+        PasswordResetToken token = passwordResetTokenDAO.get(UuidCreator.fromString(tokenId));
+        if (token == null)
+            throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+
         if (LocalDateTime.now().isAfter(token.getExpires())) {
             passwordResetTokenDAO.delete(token);
             throw new InvalidCredentialsException("INVALID_CREDENTIALS");

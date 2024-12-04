@@ -17,10 +17,10 @@ public interface UserService extends UserDetailsService {
     UserSession login(String login, String password);
     Optional<UserSession> authenticate(UserSession session);
     Optional<UserSession> authenticate(UUID sessionId);
-    void logout(UserSession session);
+    void logout(UUID sessionId);
 
     PasswordResetToken requestPasswordReset(String identifier);
-    void changePassword(PasswordResetToken token, String password);
+    void resetPassword(String tokenId, String password);
 
     List<Test> getTests(User user);
     List<TestSession> getTestSessions(User user);
