@@ -40,6 +40,22 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public User getByEmail(String email) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+
+        Predicate _emailIs = cb.equal(root.get("email"), email);
+        TypedQuery<User> query = em.createQuery(cq.where(_emailIs));
+        try {
+            return query.getSingleResult();
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
     public List<Test> getTests(User user) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Test> cq = cb.createQuery(Test.class);

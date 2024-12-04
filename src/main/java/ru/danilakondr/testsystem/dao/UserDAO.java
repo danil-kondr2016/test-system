@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserDAO extends DataAccessObject<User, Long> {
     User getByLogin(String login);
+    User getByEmail(String email);
     List<Test> getTests(User user);
     List<TestSession> getTestSessions(User user);
 }
