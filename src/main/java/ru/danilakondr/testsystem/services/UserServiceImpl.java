@@ -145,6 +145,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         token.getUser().setPassword(passwordEncoder.encode(password));
+        passwordResetTokenDAO.delete(token);
     }
 
     @Override
