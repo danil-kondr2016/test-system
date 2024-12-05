@@ -63,6 +63,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("/api/**")
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(cfg -> cfg.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -83,7 +84,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/participant", "/api/participant/*/answer").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/report/*").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/admin/systemInfo").hasAuthority("ADMINISTRATOR")
-                .anyRequest().permitAll()
         ).addFilterAfter(authFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
