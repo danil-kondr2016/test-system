@@ -18,9 +18,10 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.danilakondr.testsystem.auth.AuthFilter;
 import ru.danilakondr.testsystem.services.UserService;
@@ -61,6 +62,16 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint unauthenticatedUsersEntryPoint() {
+        return new CustomUnauthenticatedUsersEntryPoint();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/api/**")
@@ -85,6 +96,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/report/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/admin/systemInfo").hasAuthority("ADMINISTRATOR")
                 )
+                .exceptionHandling((exp) -> exp.accessDeniedHandler(accessDeniedHandler()).authenticationEntryPoint(unauthenticatedUsersEntryPoint()))
                 .addFilterAfter(authFilter, UsernamePasswordAuthenticationFilter.class)
                 ;
 
