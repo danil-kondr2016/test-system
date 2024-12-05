@@ -44,7 +44,7 @@ public class TestSessionServiceImpl implements TestSessionService {
     @Override
     @Transactional
     public TestSession create(User user, Test test) {
-        if (test.getOrganizator() != user)
+         if (test.getUser() != user)
             throw new RuntimeException("Permission denied");
 
         TestSession session = new TestSession();
@@ -78,7 +78,7 @@ public class TestSessionServiceImpl implements TestSessionService {
     public Report loadReport(Participant participant) {
         TestSession session = participant.getTestSession();
         List<Answer> answers = participantDAO.getAnswers(participant);
-        Report report = new Report(participant.getParticipantId(), participant.getName());
+        Report report = new Report(participant.getId(), participant.getName());
         for (Answer answer: answers) {
             Question question = answer.getQuestion();
             Report.Answer reportAnswer = extractAnswer(answer, question, session);
@@ -106,10 +106,10 @@ public class TestSessionServiceImpl implements TestSessionService {
                 break;
             }
         }
-        return new Report.Answer(session.getTest().getTestId(),
-                answer.getQuestion().getQuestionId(),
+        return new Report.Answer(session.getTest().getId(),
+                answer.getQuestion().getId(),
                 answer.getQuestion().getText(),
-                answer.getVariant().getVariantId(),
+                answer.getVariant().getId(),
                 answer.getText(),
                 correct);
     }

@@ -12,7 +12,6 @@ import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.protocol.CreateTestRequest;
 import ru.danilakondr.testsystem.protocol.Response;
-import ru.danilakondr.testsystem.protocol.TestDescription;
 import ru.danilakondr.testsystem.protocol.TestDescriptionResponse;
 import ru.danilakondr.testsystem.services.TestService;
 
@@ -37,7 +36,7 @@ public class TestController {
         response.setName(test.getName());
         List<Long> questionIds = new ArrayList<>();
         for (Question q : test.getQuestions())
-            questionIds.add(q.getQuestionId());
+            questionIds.add(q.getId());
         response.setQuestions(questionIds);
 
         return ResponseEntity.ok(response);
@@ -50,7 +49,7 @@ public class TestController {
         final User testOwner = principal.getUser();
 
         Test test = testService.create(testOwner, request.getName());
-        return ResponseEntity.created(URI.create("http://"+host+"/api/test/"+test.getTestId())).build();
+        return ResponseEntity.created(URI.create("http://"+host+"/api/test/"+test.getId())).build();
     }
 
     @PatchMapping("/api/test/{id}")

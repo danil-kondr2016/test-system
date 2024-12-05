@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<UserSession> authenticate(UserSession session) {
-        if (userSessionDAO.get(session.getSessionId()) == null)
+        if (userSessionDAO.get(session.getId()) == null)
             return Optional.empty();
 
         // Remove outdated session

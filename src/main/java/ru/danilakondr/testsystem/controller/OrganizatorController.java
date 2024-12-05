@@ -30,7 +30,7 @@ public class OrganizatorController {
     @PostMapping("/api/login")
     public ResponseEntity<Response> authorize(@RequestBody AuthorizeRequest req) {
         UserSession session = userService.login(req.getLogin(), req.getPassword());
-        return ResponseEntity.ok(new SessionKeyResponse(session.getSessionId().toString()));
+        return ResponseEntity.ok(new SessionKeyResponse(session.getId().toString()));
     }
 
     @PostMapping("/api/register")
@@ -59,7 +59,7 @@ public class OrganizatorController {
     {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final UserSession session = (UserSession) auth.getPrincipal();
-        userService.logout(session.getSessionId());
+        userService.logout(session.getId());
         return ResponseEntity.noContent().build();
     }
 
@@ -68,7 +68,7 @@ public class OrganizatorController {
         PasswordResetToken token = userService.requestPasswordReset(request.getEmail());
 
         String messageText = "Высылаем ключ восстановления пароля:\n\n" +
-                token.getResetTokenId().toString() + "\n\n" +
+                token.getId().toString() + "\n\n" +
                 "Ключ будет действовать до: " + token.getExpires().toString();
 
         SimpleMailMessage message = new SimpleMailMessage();

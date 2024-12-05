@@ -20,7 +20,7 @@ public class TestServiceImpl implements TestService {
     @Transactional
     public Test create(User user, String name) {
         Test newTest = new Test();
-        newTest.setOrganizator(user);
+        newTest.setUser(user);
         newTest.setName(name);
 
         testDAO.add(newTest);
