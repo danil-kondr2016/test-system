@@ -11,6 +11,7 @@ import ru.danilakondr.testsystem.data.Test;
 import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.protocol.CreateTestRequest;
+import ru.danilakondr.testsystem.protocol.ErrorResponse;
 import ru.danilakondr.testsystem.protocol.Response;
 import ru.danilakondr.testsystem.protocol.TestDescriptionResponse;
 import ru.danilakondr.testsystem.services.TestService;
@@ -25,11 +26,18 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping("/api/test/{id}")
-    public ResponseEntity<Response> getTestInfo(@PathVariable("id") String idString) {
-        long testId = Long.parseUnsignedLong(idString);
+    public ResponseEntity<Response> getTestInfo(@PathVariable("id") String testIdStr) {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final UserSession principal = (UserSession) auth.getPrincipal();
+        final User currentUser = principal.getUser();
+
+        long testId = Long.parseUnsignedLong(testIdStr);
         Test test = testService.get(testId);
         if (test == null) {
             return ResponseEntity.notFound().build();
+        }
+        if (test.getUser().getId() != currentUser.getId()) {
+            return ResponseEntity.status(403).body(new ErrorResponse("PERMISSION_DENIED"));
         }
 
         TestDescriptionResponse response = new TestDescriptionResponse();
@@ -54,10 +62,17 @@ public class TestController {
 
     @PatchMapping("/api/test/{id}")
     public ResponseEntity<Response> patchTest(@RequestBody CreateTestRequest request, @PathVariable("id") String testIdStr) {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final UserSession principal = (UserSession) auth.getPrincipal();
+        final User currentUser = principal.getUser();
+
         long testId = Long.parseUnsignedLong(testIdStr);
         Test test = testService.get(testId);
         if (test == null) {
             return ResponseEntity.notFound().build();
+        }
+        if (test.getUser().getId() != currentUser.getId()) {
+            return ResponseEntity.status(403).body(new ErrorResponse("PERMISSION_DENIED"));
         }
         test.setName(request.getName());
 
@@ -66,10 +81,17 @@ public class TestController {
 
     @DeleteMapping("/api/test/{id}")
     public ResponseEntity<Response> deleteTest(@PathVariable("id") String testIdStr) {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final UserSession principal = (UserSession) auth.getPrincipal();
+        final User currentUser = principal.getUser();
+
         long testId = Long.parseUnsignedLong(testIdStr);
         Test test = testService.get(testId);
         if (test == null) {
             return ResponseEntity.notFound().build();
+        }
+        if (test.getUser().getId() != currentUser.getId()) {
+            return ResponseEntity.status(403).body(new ErrorResponse("PERMISSION_DENIED"));
         }
         testService.remove(test);
 
