@@ -22,4 +22,7 @@ public class Test {
     private User organizator;
 
     private String name;
+
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="test")
+    private List<Question> questions;
 }
