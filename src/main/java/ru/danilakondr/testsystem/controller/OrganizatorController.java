@@ -101,6 +101,7 @@ public class OrganizatorController {
                 questionIds.add(question.getId());
             }
             description.setQuestions(questionIds);
+            descrList.add(description);
         }
         TestListResponse response = new TestListResponse();
         response.setTests(descrList);
