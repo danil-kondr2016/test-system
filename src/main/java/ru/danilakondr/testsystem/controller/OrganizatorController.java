@@ -7,15 +7,18 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.danilakondr.testsystem.data.PasswordResetToken;
-import ru.danilakondr.testsystem.data.User;
-import ru.danilakondr.testsystem.data.UserSession;
+import ru.danilakondr.testsystem.data.*;
 import ru.danilakondr.testsystem.protocol.*;
 import ru.danilakondr.testsystem.services.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -84,5 +87,37 @@ public class OrganizatorController {
     public ResponseEntity<Response> resetPassword(@RequestBody PasswordResetRequest request) {
         userService.resetPassword(request.getResetKey(), request.getNewPassword());
         return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity<Response> getTestsOfUser(User user) {
+        List<Test> tests = userService.getTests(user);
+        List<TestDescription> descrList = new ArrayList<>();
+        for (Test test : tests) {
+            TestDescription description = new TestDescription();
+            description.setName(test.getName());
+
+            List<Long> questionIds = new ArrayList<>();
+            for (Question question: test.getQuestions()) {
+                questionIds.add(question.getId());
+            }
+            description.setQuestions(questionIds);
+        }
+        TestListResponse response = new TestListResponse();
+        response.setTests(descrList);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/myTests")
+    public ResponseEntity<Response> getMyTests() {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final UserSession principal = (UserSession)auth.getPrincipal();
+        return getTestsOfUser(principal.getUser());
+    }
+
+    @GetMapping("/api/tests/{username}")
+    public ResponseEntity<Response> getTestsOfUser(@PathVariable("username") String username) {
+        User user = userService.find(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        return getTestsOfUser(user);
     }
 }
