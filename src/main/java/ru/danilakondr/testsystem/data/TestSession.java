@@ -24,7 +24,7 @@ public class TestSession {
     }
     @Id
     @GeneratedValue(strategy= GenerationType.UUID)
-    private UUID testSessionId;
+    private UUID id;
 
     @ManyToOne
     private Test test;

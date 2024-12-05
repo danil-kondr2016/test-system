@@ -1,7 +1,6 @@
 package ru.danilakondr.testsystem.dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -61,7 +60,7 @@ public class UserDAOImpl implements UserDAO {
         CriteriaQuery<Test> cq = cb.createQuery(Test.class);
         Root<Test> root = cq.from(Test.class);
 
-        Predicate _organizerIdIs = cb.equal(root.get("organizatorId"), user.getUserId());
+        Predicate _organizerIdIs = cb.equal(root.get("id"), user.getId());
         TypedQuery<Test> query = em.createQuery(cq.where(_organizerIdIs));
         return query.getResultList();
     }
@@ -72,7 +71,7 @@ public class UserDAOImpl implements UserDAO {
                 "SELECT s FROM Test t INNER JOIN TestSession t.testId s WHERE t.userId=:id",
                 TestSession.class
         );
-        query.setParameter("id", user.getUserId());
+        query.setParameter("id", user.getId());
 
         return query.getResultList();
     }

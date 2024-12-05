@@ -2,14 +2,11 @@ package ru.danilakondr.testsystem.dao;
 
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.data.UserSession;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -20,7 +17,7 @@ public class UserSesssionDAOImpl implements UserSessionDAO {
 
     @Override
     public void add(UserSession object) {
-        object.setSessionId(UuidCreator.getRandomBased());
+        object.setId(UuidCreator.getRandomBased());
         em.persist(object);
     }
 

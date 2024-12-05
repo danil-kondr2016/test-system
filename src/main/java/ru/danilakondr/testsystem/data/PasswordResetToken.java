@@ -2,7 +2,6 @@ package ru.danilakondr.testsystem.data;
 
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PasswordResetToken {
     @Id
-    private UUID resetTokenId;
+    private UUID id;
 
     @ManyToOne(optional=false)
     @JoinColumn(name="user")
@@ -25,7 +24,7 @@ public class PasswordResetToken {
     private LocalDateTime expires;
 
     public PasswordResetToken(User user) {
-        resetTokenId = UuidCreator.getRandomBased();
+        id = UuidCreator.getRandomBased();
         this.user = user;
         this.expires = LocalDateTime.now().plusSeconds(86400L);
     }

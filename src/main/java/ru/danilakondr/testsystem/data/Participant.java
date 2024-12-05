@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Entity
 @Getter
 @Setter
@@ -16,7 +14,7 @@ import java.util.UUID;
 public class Participant {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
-    private long participantId;
+    private long id;
 
     @ManyToOne(optional=false)
     private TestSession testSession;

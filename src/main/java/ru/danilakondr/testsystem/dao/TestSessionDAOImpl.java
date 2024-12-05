@@ -1,7 +1,6 @@
 package ru.danilakondr.testsystem.dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.danilakondr.testsystem.data.Participant;
 import ru.danilakondr.testsystem.data.TestSession;
-import ru.danilakondr.testsystem.data.User;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +26,7 @@ public class TestSessionDAOImpl implements TestSessionDAO {
         CriteriaQuery<Participant> cq = cb.createQuery(Participant.class);
         Root<Participant> root = cq.from(Participant.class);
 
-        Predicate _testSessionIdIs = cb.equal(root.get("testSessionId"), session.getTestSessionId());
+        Predicate _testSessionIdIs = cb.equal(root.get("testSessionId"), session.getId());
         TypedQuery<Participant> query = em.createQuery(cq.where(_testSessionIdIs));
         return query.getResultList();
     }

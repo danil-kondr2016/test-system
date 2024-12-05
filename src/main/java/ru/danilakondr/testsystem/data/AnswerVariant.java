@@ -14,7 +14,7 @@ import lombok.Setter;
 public class AnswerVariant {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
-    private long variantId;
+    private long id;
 
     @ManyToOne(optional=false)
     private Question question;

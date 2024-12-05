@@ -14,7 +14,7 @@ import lombok.Setter;
 public class Answer {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
-    private long answerId;
+    private long id;
 
     @ManyToOne(optional=false)
     private Participant participant;

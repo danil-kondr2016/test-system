@@ -16,10 +16,10 @@ import java.util.List;
 public class Test {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
-    private long testId;
+    private long id;
 
     @ManyToOne(optional = false)
-    private User organizator;
+    private User user;
 
     private String name;
 

@@ -25,7 +25,7 @@ public class ParticipantDAOImpl implements ParticipantDAO {
         CriteriaQuery<Answer> cq = cb.createQuery(Answer.class);
         Root<Answer> root = cq.from(Answer.class);
 
-        Predicate _testIdIs = cb.equal(root.get("participantId"), participant.getParticipantId());
+        Predicate _testIdIs = cb.equal(root.get("id"), participant.getId());
         TypedQuery<Answer> query = em.createQuery(cq.where(_testIdIs));
         return query.getResultList();
     }

@@ -14,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UserSession {
     @Id
-    private UUID sessionId;
+    private UUID id;
 
     @ManyToOne(optional=false)
     @JoinColumn(name="user")

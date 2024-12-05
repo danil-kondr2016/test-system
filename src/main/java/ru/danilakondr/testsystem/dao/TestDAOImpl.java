@@ -23,7 +23,7 @@ public class TestDAOImpl implements TestDAO {
         CriteriaQuery<Question> cq = cb.createQuery(Question.class);
         Root<Question> root = cq.from(Question.class);
 
-        Predicate _testIdIs = cb.equal(root.get("testId"), test.getTestId());
+        Predicate _testIdIs = cb.equal(root.get("id"), test.getId());
         TypedQuery<Question> query = em.createQuery(cq.where(_testIdIs));
         return query.getResultList();
     }

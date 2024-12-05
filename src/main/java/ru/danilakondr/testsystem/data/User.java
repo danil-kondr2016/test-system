@@ -22,7 +22,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
     @Column(nullable = false)
-    private long userId;
+    private long id;
 
     @Column(nullable = false, unique = true)
     private String login;

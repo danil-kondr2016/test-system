@@ -25,7 +25,7 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
-    private long questionId;
+    private long id;
 
     @ManyToOne(optional=false)
     private Test test;
