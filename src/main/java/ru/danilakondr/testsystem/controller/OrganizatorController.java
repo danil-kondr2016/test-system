@@ -37,7 +37,7 @@ public class OrganizatorController {
     public ResponseEntity<Response> register(@RequestBody RegisterRequest request) {
         try {
             userService.register(request.getLogin(), request.getEmail(), request.getPassword());
-            return ResponseEntity.status(201).body(null);
+            return ResponseEntity.noContent().build();
         }
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(403).body(new ErrorResponse("USER_ALREADY_EXISTS"));
@@ -51,7 +51,7 @@ public class OrganizatorController {
         final User user = principal.getUser();
 
         userService.changePassword(user, request.getNewPassword());
-        return ResponseEntity.status(204).body(null);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/api/logout")
@@ -60,7 +60,7 @@ public class OrganizatorController {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final UserSession session = (UserSession) auth.getPrincipal();
         userService.logout(session.getSessionId());
-        return ResponseEntity.status(204).body(null);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/api/requestPasswordReset")
@@ -77,12 +77,12 @@ public class OrganizatorController {
         message.setSubject("Восстановление пароля");
         message.setText(messageText);
         emailSender.send(message);
-        return ResponseEntity.status(204).body(null);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/api/resetPassword")
     public ResponseEntity<Response> resetPassword(@RequestBody PasswordResetRequest request) {
         userService.resetPassword(request.getResetKey(), request.getNewPassword());
-        return ResponseEntity.status(204).body(null);
+        return ResponseEntity.noContent().build();
     }
 }
