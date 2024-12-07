@@ -1,6 +1,7 @@
 package ru.danilakondr.testsystem.services;
 
 import com.github.f4b6a3.uuid.UuidCreator;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -9,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.danilakondr.testsystem.dao.PasswordResetTokenDAO;
-import ru.danilakondr.testsystem.dao.UserDAO;
-import ru.danilakondr.testsystem.dao.UserSessionDAO;
+import ru.danilakondr.testsystem.dao.*;
 import ru.danilakondr.testsystem.data.*;
 import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
 
@@ -23,6 +22,7 @@ import java.util.UUID;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
+    @Autowired
     private UserDAO userDAO;
 
     @Autowired
@@ -32,35 +32,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private PasswordResetTokenDAO passwordResetTokenDAO;
 
     @Autowired
+    private TestDAO testDAO;
+
+    @Autowired
+    private TestSessionDAO testSessionDAO;
+
+    @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
     @Override
     @Transactional
-    public User register(String login, String email, String password) {
+    public void register(String login, String email, String password) {
         User user = new User();
         user.setLogin(login);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setUserRole(User.Role.ORGANIZATOR);
 
-        userDAO.add(user);
-        return user;
+        userDAO.save(user);
     }
 
     @Override
     public Optional<User> find(String login) {
-        return Optional.ofNullable(userDAO.getByLogin(login));
+        return userDAO.getByLogin(login);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(userDAO.getByEmail(email));
+        return userDAO.getByEmail(email);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             session.setUser(user.get());
             session.setLoginDate(loginDate);
             session.setExpires(loginDate.plusDays(30));
-            userSessionDAO.add(session);
+            userSessionDAO.save(session);
 
             return session;
         }
@@ -93,9 +93,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<UserSession> authenticate(UserSession session) {
-        if (userSessionDAO.get(session.getId()) == null)
-            return Optional.empty();
-
         // Remove outdated session
         if (LocalDateTime.now().isAfter(session.getExpires())) {
             logout(session);
@@ -107,10 +104,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<UserSession> authenticate(UUID sessionId) {
-        UserSession session = userSessionDAO.get(sessionId);
-        if (session == null)
-            return Optional.empty();
-
+        UserSession session;
+        try {
+            session = userSessionDAO.getReferenceById(sessionId);
+        }
+        catch (EntityNotFoundException e) {
+            throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+        }
         return authenticate(session);
     }
 
@@ -120,9 +120,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void logout(UUID sessionId) {
-        UserSession session = userSessionDAO.get(sessionId);
-        if (session == null)
+        UserSession session;
+        try {
+            session = userSessionDAO.getReferenceById(sessionId);
+        }
+        catch (EntityNotFoundException e) {
             throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+        }
         logout(session);
     }
 
@@ -140,16 +144,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         PasswordResetToken token = new PasswordResetToken(user.get());
-        passwordResetTokenDAO.add(token);
+        passwordResetTokenDAO.save(token);
         return token;
     }
 
     @Override
     @Transactional
     public void resetPassword(String tokenId, String password) {
-        PasswordResetToken token = passwordResetTokenDAO.get(UuidCreator.fromString(tokenId));
-        if (token == null)
+        PasswordResetToken token;
+        try {
+            token = passwordResetTokenDAO.getReferenceById(UuidCreator.fromString(tokenId));
+        }
+        catch (EntityNotFoundException e) {
             throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+        }
 
         if (LocalDateTime.now().isAfter(token.getExpires())) {
             passwordResetTokenDAO.delete(token);
@@ -163,18 +171,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public List<Test> getTests(User user) {
-        return userDAO.getTests(user);
+        return testDAO.getByUser(user);
     }
 
     @Override
     @Transactional
     public List<TestSession> getTestSessions(User user) {
-        return userDAO.getTestSessions(user);
+        return testSessionDAO.getByUser(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = find(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        return user;
+        return find(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }

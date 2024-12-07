@@ -11,18 +11,11 @@ import ru.danilakondr.testsystem.data.TestSession;
 
 @Service
 public class ParticipantServiceImpl implements ParticipantService {
+    @Autowired
     private ParticipantDAO participantDAO;
+
+    @Autowired
     private AnswerDAO answerDAO;
-
-    @Autowired
-    public void setParticipantDAO(ParticipantDAO participantDAO) {
-        this.participantDAO = participantDAO;
-    }
-
-    @Autowired
-    public void setAnswerDAO(AnswerDAO answerDAO) {
-        this.answerDAO = answerDAO;
-    }
 
     @Override
     @Transactional
@@ -31,20 +24,20 @@ public class ParticipantServiceImpl implements ParticipantService {
         participant.setTestSession(testSession);
         participant.setName(name);
 
-        participantDAO.add(participant);
+        participantDAO.save(participant);
         return participant;
     }
 
     @Override
     @Transactional
     public Participant get(long participantId) {
-        return participantDAO.get(participantId);
+        return participantDAO.getReferenceById(participantId);
     }
 
     @Override
     @Transactional
     public void update(Participant participant) {
-        participantDAO.update(participant);
+        participantDAO.save(participant);
     }
 
     @Override
@@ -57,6 +50,6 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Transactional
     public void putAnswer(Participant participant, Answer answer) {
         answer.setParticipant(participant);
-        answerDAO.add(answer);
+        answerDAO.save(answer);
     }
 }

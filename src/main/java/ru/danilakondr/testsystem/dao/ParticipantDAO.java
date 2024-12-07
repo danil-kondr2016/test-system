@@ -1,12 +1,14 @@
 package ru.danilakondr.testsystem.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.danilakondr.testsystem.data.Answer;
 import ru.danilakondr.testsystem.data.Participant;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-public interface ParticipantDAO extends DataAccessObject<Participant, Long> {
-    List<Answer> getAnswers(Participant participant);
-    Stream<Participant> getAllConnectedParticipants();
+public interface ParticipantDAO extends JpaRepository<Participant, Long> {
+    @Query("SELECT p FROM Participant p INNER JOIN p.testSession t WHERE t.testSessionState=ACTIVE")
+    Stream<Participant> findAllConnectedParticipants();
 }

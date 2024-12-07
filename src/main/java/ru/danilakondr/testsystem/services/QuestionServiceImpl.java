@@ -9,12 +9,8 @@ import ru.danilakondr.testsystem.data.Test;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
-    private QuestionDAO questionDAO;
-
     @Autowired
-    public void setQuestionDAO(QuestionDAO questionDAO) {
-        this.questionDAO = questionDAO;
-    }
+    private QuestionDAO questionDAO;
 
     @Override
     @Transactional
@@ -24,20 +20,20 @@ public class QuestionServiceImpl implements QuestionService {
         question.setText(text);
         question.setTest(test);
 
-        questionDAO.add(question);
+        questionDAO.save(question);
         return question;
     }
 
     @Override
     @Transactional
     public Question get(long questionId) {
-        return questionDAO.get(questionId);
+        return questionDAO.getReferenceById(questionId);
     }
 
     @Override
     @Transactional
     public void update(Question question) {
-        questionDAO.update(question);
+        questionDAO.save(question);
     }
 
     @Override

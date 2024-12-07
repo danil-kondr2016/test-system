@@ -3,10 +3,7 @@ package ru.danilakondr.testsystem.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.danilakondr.testsystem.dao.ParticipantDAO;
-import ru.danilakondr.testsystem.dao.QuestionDAO;
-import ru.danilakondr.testsystem.dao.TestDAO;
-import ru.danilakondr.testsystem.dao.TestSessionDAO;
+import ru.danilakondr.testsystem.dao.*;
 import ru.danilakondr.testsystem.data.*;
 import ru.danilakondr.testsystem.info.Report;
 
@@ -16,55 +13,33 @@ import java.util.UUID;
 
 @Service
 public class TestSessionServiceImpl implements TestSessionService {
-    private TestDAO testDAO;
+    @Autowired
     private TestSessionDAO testSessionDAO;
-    private ParticipantDAO participantDAO;
-    private QuestionDAO questionDAO;
 
     @Autowired
-    public void setTestDAO(TestDAO testDAO) {
-        this.testDAO = testDAO;
-    }
-
-    @Autowired
-    public void setTestSessionDAO(TestSessionDAO testSessionDAO) {
-        this.testSessionDAO = testSessionDAO;
-    }
-
-    @Autowired
-    public void setParticipantDAO(ParticipantDAO participantDAO) {
-        this.participantDAO = participantDAO;
-    }
-
-    @Autowired
-    public void setQuestionDAO(QuestionDAO questionDAO) {
-        this.questionDAO = questionDAO;
-    }
+    private AnswerDAO answerDAO;
 
     @Override
     @Transactional
     public TestSession create(User user, Test test) {
-         if (test.getUser() != user)
-            throw new RuntimeException("Permission denied");
-
         TestSession session = new TestSession();
         session.setTest(test);
         session.setTestSessionState(TestSession.State.ACTIVE);
         session.setBegin(LocalDateTime.now());
-        testSessionDAO.add(session);
+        testSessionDAO.save(session);
         return session;
     }
 
     @Override
     @Transactional
     public TestSession get(UUID testSessionId) {
-        return testSessionDAO.get(testSessionId);
+        return testSessionDAO.getReferenceById(testSessionId);
     }
 
     @Override
     @Transactional
     public void update(TestSession testSession) {
-        testSessionDAO.update(testSession);
+        testSessionDAO.save(testSession);
     }
 
     @Override
@@ -77,7 +52,7 @@ public class TestSessionServiceImpl implements TestSessionService {
     @Transactional
     public Report loadReport(Participant participant) {
         TestSession session = participant.getTestSession();
-        List<Answer> answers = participantDAO.getAnswers(participant);
+        List<Answer> answers = answerDAO.findByParticipant(participant);
         Report report = new Report(participant.getId(), participant.getName());
         for (Answer answer: answers) {
             Question question = answer.getQuestion();

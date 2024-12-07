@@ -9,12 +9,8 @@ import ru.danilakondr.testsystem.data.User;
 
 @Service
 public class TestServiceImpl implements TestService {
-    private TestDAO testDAO;
-
     @Autowired
-    public void setTestDAO(TestDAO testDAO) {
-        this.testDAO = testDAO;
-    }
+    private TestDAO testDAO;
 
     @Override
     @Transactional
@@ -23,20 +19,20 @@ public class TestServiceImpl implements TestService {
         newTest.setUser(user);
         newTest.setName(name);
 
-        testDAO.add(newTest);
+        testDAO.save(newTest);
         return newTest;
     }
 
     @Override
     @Transactional
     public Test get(long testId) {
-        return testDAO.get(testId);
+        return testDAO.getReferenceById(testId);
     }
 
     @Override
     @Transactional
     public void update(Test test) {
-        testDAO.update(test);
+        testDAO.save(test);
     }
 
     @Override
