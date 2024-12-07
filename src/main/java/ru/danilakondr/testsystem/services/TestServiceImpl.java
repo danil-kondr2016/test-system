@@ -7,6 +7,8 @@ import ru.danilakondr.testsystem.dao.TestDAO;
 import ru.danilakondr.testsystem.data.Test;
 import ru.danilakondr.testsystem.data.User;
 
+import java.util.List;
+
 @Service
 public class TestServiceImpl implements TestService {
     @Autowired
@@ -39,5 +41,11 @@ public class TestServiceImpl implements TestService {
     @Transactional
     public void remove(Test test) {
         testDAO.delete(test);
+    }
+
+    @Override
+    @Transactional
+    public List<Test> getByUser(User user) {
+        return testDAO.getByUser(user);
     }
 }

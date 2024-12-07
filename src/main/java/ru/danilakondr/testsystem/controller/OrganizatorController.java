@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.danilakondr.testsystem.data.*;
 import ru.danilakondr.testsystem.protocol.*;
+import ru.danilakondr.testsystem.services.TestService;
 import ru.danilakondr.testsystem.services.UserService;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrganizatorController {
     private final UserService userService;
+    private final TestService testService;
 
     private final JavaMailSender emailSender;
 
@@ -91,7 +93,7 @@ public class OrganizatorController {
     }
 
     private ResponseEntity<Response> getTestsOfUser(User user) {
-        List<Test> tests = userService.getTests(user);
+        List<Test> tests = testService.getByUser(user);
         List<Description> descriptions = tests.stream()
                 .map(Description.Test::new)
                 .collect(Collectors.toUnmodifiableList());

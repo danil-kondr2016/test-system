@@ -21,7 +21,4 @@ public interface UserService extends UserDetailsService {
 
     PasswordResetToken requestPasswordReset(String identifier);
     void resetPassword(String tokenId, String password);
-
-    List<Test> getTests(User user);
-    List<TestSession> getTestSessions(User user);
 }

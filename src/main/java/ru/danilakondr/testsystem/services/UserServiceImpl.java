@@ -169,18 +169,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    @Transactional
-    public List<Test> getTests(User user) {
-        return testDAO.getByUser(user);
-    }
-
-    @Override
-    @Transactional
-    public List<TestSession> getTestSessions(User user) {
-        return testSessionDAO.getByUser(user);
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return find(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }

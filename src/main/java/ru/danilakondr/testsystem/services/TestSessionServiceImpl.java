@@ -88,4 +88,10 @@ public class TestSessionServiceImpl implements TestSessionService {
                 answer.getText(),
                 correct);
     }
+
+    @Override
+    @Transactional
+    public List<TestSession> getByUser(User user) {
+        return testSessionDAO.getByUser(user);
+    }
 }
