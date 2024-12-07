@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Test {
+public class Test implements Ownable {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private long id;
@@ -25,4 +25,9 @@ public class Test {
 
     @OneToMany(cascade=CascadeType.ALL, mappedBy="test")
     private List<Question> questions;
+
+    @Override
+    public boolean isOwnedBy(User user) {
+        return this.user.getId() == user.getId();
+    }
 }

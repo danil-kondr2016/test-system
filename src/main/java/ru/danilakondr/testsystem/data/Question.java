@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
 
 import java.util.List;
 
@@ -14,7 +15,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question {
+public class Question implements Ownable {
+    @Override
+    public boolean isOwnedBy(User user) {
+        return this.test.isOwnedBy(user);
+    }
+
     @JsonFormat(shape=JsonFormat.Shape.STRING)
     public enum Type {
         NUMBER_ENTRY,
