@@ -14,6 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UserSession {
     @Id
+    @GeneratedValue(strategy=GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(optional=false)
