@@ -19,6 +19,7 @@ import ru.danilakondr.testsystem.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class OrganizatorController {
     @PostMapping("/api/login")
     public ResponseEntity<Response> authorize(@RequestBody AuthorizeRequest req) {
         UserSession session = userService.login(req.getLogin(), req.getPassword());
-        return ResponseEntity.ok(new SessionKeyResponse(session.getId().toString()));
+        return ResponseEntity.ok(new Response.SessionKeyResponse(session.getId().toString()));
     }
 
     @PostMapping("/api/register")
@@ -43,7 +44,7 @@ public class OrganizatorController {
             return ResponseEntity.noContent().build();
         }
         catch (IllegalArgumentException e) {
-            return ResponseEntity.status(403).body(new ErrorResponse("USER_ALREADY_EXISTS"));
+            return ResponseEntity.status(403).body(new Response.Error("USER_ALREADY_EXISTS"));
         }
     }
 
@@ -91,20 +92,10 @@ public class OrganizatorController {
 
     private ResponseEntity<Response> getTestsOfUser(User user) {
         List<Test> tests = userService.getTests(user);
-        List<TestDescription> descrList = new ArrayList<>();
-        for (Test test : tests) {
-            TestDescription description = new TestDescription();
-            description.setName(test.getName());
-
-            List<Long> questionIds = new ArrayList<>();
-            for (Question question: test.getQuestions()) {
-                questionIds.add(question.getId());
-            }
-            description.setQuestions(questionIds);
-            descrList.add(description);
-        }
-        TestListResponse response = new TestListResponse();
-        response.setTests(descrList);
+        List<Description> descriptions = tests.stream()
+                .map(Description.Test::new)
+                .collect(Collectors.toUnmodifiableList());
+        Response.DescriptionList response = new Response.DescriptionList(descriptions);
 
         return ResponseEntity.ok(response);
     }
