@@ -2,6 +2,8 @@ package ru.danilakondr.testsystem.protocol;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +21,7 @@ public abstract class Description {
     @Data
     @AllArgsConstructor
     public static class AnswerVariant extends Description {
+        @JsonSerialize(using= ToStringSerializer.class)
         long id;
         String text;
         boolean correct;
@@ -34,6 +37,7 @@ public abstract class Description {
     @Data
     @AllArgsConstructor
     public static class Question extends Description {
+        @JsonSerialize(using= ToStringSerializer.class)
         long id;
         ru.danilakondr.testsystem.data.Question.Type type;
         String text;
@@ -51,6 +55,7 @@ public abstract class Description {
     @Data
     @AllArgsConstructor
     public static class Test extends Description {
+        @JsonSerialize(using= ToStringSerializer.class)
         long id;
         String name;
         List<Question> questions;
