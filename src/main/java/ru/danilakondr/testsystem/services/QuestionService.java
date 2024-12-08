@@ -9,6 +9,6 @@ import java.util.List;
 public interface QuestionService {
     Question create(Test test, Question.Type type, String text, List<AnswerVariant> variants);
     Question get(long questionId);
-    void update(Question question);
+    void update(Question question, Question.Type type, String text, List<AnswerVariant> variants);
     void remove(Question question);
 }

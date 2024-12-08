@@ -56,7 +56,7 @@ public class QuestionController {
         return ResponseEntity.created(URI.create("http://"+host+"/api/question/"+question.getId())).build();
     }
 
-    @PutMapping("/api/question/{id}")
+    @PatchMapping("/api/question/{id}")
     public ResponseEntity<Response> patchQuestion(@RequestBody CreateQuestionRequest req, @PathVariable("id") String questionIdStr) {
         final User currentUser = UserUtils.getCurrentUser();
 
@@ -71,9 +71,7 @@ public class QuestionController {
                 .map(description -> new AnswerVariant(description.getId(), question, description.getText(), description.isCorrect()))
                 .toList();
 
-        question.setText(req.getText());
-        question.setType(req.getType());
-        question.setVariants(variants);
+        questionService.update(question, req.getType(), req.getText(), variants);
 
         return ResponseEntity.noContent().build();
     }
