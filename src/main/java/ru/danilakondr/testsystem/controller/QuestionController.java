@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.danilakondr.testsystem.data.*;
-import ru.danilakondr.testsystem.protocol.CreateQuestionRequest;
+import ru.danilakondr.testsystem.protocol.QuestionBody;
 import ru.danilakondr.testsystem.protocol.Description;
 import ru.danilakondr.testsystem.protocol.Response;
 import ru.danilakondr.testsystem.services.QuestionService;
@@ -38,7 +38,7 @@ public class QuestionController {
     }
 
     @PutMapping("/api/question")
-    public ResponseEntity<Response> putQuestion(@RequestBody CreateQuestionRequest req, @RequestHeader("Host") String host) {
+    public ResponseEntity<Response> putQuestion(@RequestBody QuestionBody req, @RequestHeader("Host") String host) {
         Test test = testService.get(req.getTestId());
         if (test == null)
             return ResponseEntity.badRequest().build();
@@ -57,7 +57,7 @@ public class QuestionController {
     }
 
     @PatchMapping("/api/question/{id}")
-    public ResponseEntity<Response> patchQuestion(@RequestBody CreateQuestionRequest req, @PathVariable("id") String questionIdStr) {
+    public ResponseEntity<Response> patchQuestion(@RequestBody QuestionBody req, @PathVariable("id") String questionIdStr) {
         final User currentUser = UserUtils.getCurrentUser();
 
         long questionId = Long.parseUnsignedLong(questionIdStr);

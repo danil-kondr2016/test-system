@@ -6,7 +6,7 @@ import ru.danilakondr.testsystem.data.Question;
 import java.util.List;
 
 @Data
-public class CreateQuestionRequest {
+public class QuestionBody {
     long testId;
     Question.Type type;
     String text;
