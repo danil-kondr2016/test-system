@@ -2,6 +2,7 @@ package ru.danilakondr.testsystem.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,7 +19,6 @@ import ru.danilakondr.testsystem.protocol.*;
 import ru.danilakondr.testsystem.services.TestService;
 import ru.danilakondr.testsystem.services.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +36,7 @@ public class OrganizatorController {
     @PostMapping("/api/login")
     public ResponseEntity<Response> authorize(@RequestBody AuthorizeRequest req) {
         UserSession session = userService.login(req.getLogin(), req.getPassword());
-        return ResponseEntity.ok(new Response.SessionKeyResponse(session.getId().toString()));
+        return ResponseEntity.ok(new Response.SessionKey(session.getId().toString()));
     }
 
     @PostMapping("/api/register")
@@ -46,7 +46,7 @@ public class OrganizatorController {
             return ResponseEntity.noContent().build();
         }
         catch (IllegalArgumentException e) {
-            return ResponseEntity.status(403).body(new Response.Error("USER_ALREADY_EXISTS"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.Error.USER_ALREADY_EXISTS);
         }
     }
 

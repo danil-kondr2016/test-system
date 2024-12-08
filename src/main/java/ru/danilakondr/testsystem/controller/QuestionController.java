@@ -29,9 +29,9 @@ public class QuestionController {
         long questionId = Long.parseUnsignedLong(questionIdStr);
         Question question = questionService.get(questionId);
         if (question == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
         if (!question.isOwnedBy(currentUser))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response.Error("PERMISSION_DENIED"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         Description.Question descr = new Description.Question(question);
         return ResponseEntity.ok(new Response.Description(descr));
@@ -63,9 +63,9 @@ public class QuestionController {
         long questionId = Long.parseUnsignedLong(questionIdStr);
         Question question = questionService.get(questionId);
         if (question == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
         if (!question.isOwnedBy(currentUser))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response.Error("PERMISSION_DENIED"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         List<AnswerVariant> variants = req.getVariants().stream()
                 .map(description -> new AnswerVariant(description.getId(), question, description.getText(), description.isCorrect()))
@@ -83,9 +83,9 @@ public class QuestionController {
         long questionId = Long.parseUnsignedLong(questionIdStr);
         Question question = questionService.get(questionId);
         if (question == null)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
         if (!question.isOwnedBy(currentUser))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response.Error("PERMISSION_DENIED"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         questionService.remove(question);
 

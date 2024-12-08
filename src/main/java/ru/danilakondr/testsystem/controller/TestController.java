@@ -1,6 +1,7 @@
 package ru.danilakondr.testsystem.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +27,10 @@ public class TestController {
         long testId = Long.parseUnsignedLong(testIdStr);
         Test test = testService.get(testId);
         if (test == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
         }
         if (!test.isOwnedBy(currentUser)) {
-            return ResponseEntity.status(403).body(new Response.Error("PERMISSION_DENIED"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
         }
 
         Response.Description response = new Response.Description(new Description.Test(test));
@@ -51,10 +52,10 @@ public class TestController {
         long testId = Long.parseUnsignedLong(testIdStr);
         Test test = testService.get(testId);
         if (test == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
         }
         if (!test.isOwnedBy(currentUser)) {
-            return ResponseEntity.status(403).body(new Response.Error("PERMISSION_DENIED"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
         }
         test.setName(request.getName());
 
@@ -68,10 +69,10 @@ public class TestController {
         long testId = Long.parseUnsignedLong(testIdStr);
         Test test = testService.get(testId);
         if (test == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
         }
         if (!test.isOwnedBy(currentUser)) {
-            return ResponseEntity.status(403).body(new Response.Error("PERMISSION_DENIED"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
         }
         testService.remove(test);
 

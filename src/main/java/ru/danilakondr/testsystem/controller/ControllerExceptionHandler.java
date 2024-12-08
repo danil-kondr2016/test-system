@@ -1,5 +1,6 @@
 package ru.danilakondr.testsystem.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,21 +12,18 @@ import ru.danilakondr.testsystem.protocol.Response;
 
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Response.Error INVALID_CREDENTIALS = new Response.Error("INVALID_CREDENTIALS");
-    private static final Response.Error INVALID_REQUEST = new Response.Error("INVALID_REQUEST");
-
     @ExceptionHandler
     public ResponseEntity<?> handleInvalidCredentialsException(InvalidCredentialsException e, WebRequest req) {
-        return ResponseEntity.status(403).body(INVALID_CREDENTIALS);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.INVALID_CREDENTIALS);
     }
 
     @ExceptionHandler
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException e, WebRequest req) {
-        return ResponseEntity.status(403).body(INVALID_CREDENTIALS);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.INVALID_CREDENTIALS);
     }
 
     @ExceptionHandler
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e, WebRequest req) {
-        return ResponseEntity.status(400).body(INVALID_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.Error.INVALID_REQUEST);
     }
 }
