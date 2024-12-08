@@ -7,7 +7,6 @@ import ru.danilakondr.testsystem.data.TestSession;
 public interface ParticipantService {
     Participant create(TestSession testSession, String name);
     Participant get(long participantId);
-    void update(Participant participant);
     void remove(Participant participant);
     void putAnswer(Participant participant, Answer answer);
 }

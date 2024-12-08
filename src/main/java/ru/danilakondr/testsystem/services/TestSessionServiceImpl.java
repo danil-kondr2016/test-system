@@ -38,12 +38,6 @@ public class TestSessionServiceImpl implements TestSessionService {
 
     @Override
     @Transactional
-    public void update(TestSession testSession) {
-        testSessionDAO.save(testSession);
-    }
-
-    @Override
-    @Transactional
     public void remove(TestSession session) {
         testSessionDAO.delete(session);
     }

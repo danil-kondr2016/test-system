@@ -8,7 +8,6 @@ import java.util.List;
 public interface TestService {
     Test create(User user, String name);
     Test get(long testId);
-    void update(Test test);
     void remove(Test test);
     List<Test> getByUser(User user);
 }

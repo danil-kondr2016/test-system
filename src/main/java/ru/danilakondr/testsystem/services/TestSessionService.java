@@ -12,7 +12,6 @@ import java.util.UUID;
 public interface TestSessionService {
     TestSession create(User user, Test test);
     TestSession get(UUID testSessionId);
-    void update(TestSession testSession);
     void remove(TestSession testSession);
     Report loadReport(Participant participant);
     List<TestSession> getByUser(User user);

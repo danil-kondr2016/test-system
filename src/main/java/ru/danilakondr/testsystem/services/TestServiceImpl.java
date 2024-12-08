@@ -33,12 +33,6 @@ public class TestServiceImpl implements TestService {
 
     @Override
     @Transactional
-    public void update(Test test) {
-        testDAO.save(test);
-    }
-
-    @Override
-    @Transactional
     public void remove(Test test) {
         testDAO.delete(test);
     }

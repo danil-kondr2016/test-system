@@ -36,12 +36,6 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     @Transactional
-    public void update(Participant participant) {
-        participantDAO.save(participant);
-    }
-
-    @Override
-    @Transactional
     public void remove(Participant participant) {
         participantDAO.delete(participant);
     }
