@@ -23,7 +23,7 @@ public class QuestionController {
 
     // TODO implement get questions for participants
     @GetMapping("/api/question/{id}")
-    public ResponseEntity<Response> getQuestion(@PathVariable("id") String questionIdStr) {
+    public ResponseEntity<Response> getQuestionInfo(@PathVariable("id") String questionIdStr) {
         final User currentUser = UserUtils.getCurrentUser();
 
         long questionId = Long.parseUnsignedLong(questionIdStr);

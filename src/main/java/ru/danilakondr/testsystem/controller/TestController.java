@@ -37,7 +37,7 @@ public class TestController {
     }
 
     @PutMapping("/api/test")
-    public ResponseEntity<Response> createTest(@RequestBody TestBody request, @RequestHeader("Host") String host) {
+    public ResponseEntity<Response> putTest(@RequestBody TestBody request, @RequestHeader("Host") String host) {
         final User testOwner = UserUtils.getCurrentUser();
 
         Test test = testService.create(testOwner, request.getName());
