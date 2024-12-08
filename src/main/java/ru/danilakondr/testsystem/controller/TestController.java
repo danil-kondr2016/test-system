@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.danilakondr.testsystem.data.Test;
 import ru.danilakondr.testsystem.data.User;
-import ru.danilakondr.testsystem.protocol.CreateTestRequest;
+import ru.danilakondr.testsystem.protocol.TestBody;
 import ru.danilakondr.testsystem.protocol.Description;
 import ru.danilakondr.testsystem.protocol.Response;
 import ru.danilakondr.testsystem.services.TestService;
@@ -37,7 +37,7 @@ public class TestController {
     }
 
     @PutMapping("/api/test")
-    public ResponseEntity<Response> createTest(@RequestBody CreateTestRequest request, @RequestHeader("Host") String host) {
+    public ResponseEntity<Response> createTest(@RequestBody TestBody request, @RequestHeader("Host") String host) {
         final User testOwner = UserUtils.getCurrentUser();
 
         Test test = testService.create(testOwner, request.getName());
@@ -45,7 +45,7 @@ public class TestController {
     }
 
     @PatchMapping("/api/test/{id}")
-    public ResponseEntity<Response> patchTest(@RequestBody CreateTestRequest request, @PathVariable("id") String testIdStr) {
+    public ResponseEntity<Response> patchTest(@RequestBody TestBody request, @PathVariable("id") String testIdStr) {
         final User currentUser = UserUtils.getCurrentUser();
 
         long testId = Long.parseUnsignedLong(testIdStr);

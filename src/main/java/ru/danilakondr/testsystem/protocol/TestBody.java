@@ -3,6 +3,6 @@ package ru.danilakondr.testsystem.protocol;
 import lombok.Data;
 
 @Data
-public class CreateTestRequest {
+public class TestBody {
     String name;
 }
