@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import ru.danilakondr.testsystem.data.Answer;
 import ru.danilakondr.testsystem.data.Participant;
 
-import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface ParticipantDAO extends JpaRepository<Participant, Long> {
+public interface ParticipantDAO extends JpaRepository<Participant, UUID> {
     @Query("SELECT p FROM Participant p INNER JOIN p.testSession t WHERE t.testSessionState=ACTIVE")
     Stream<Participant> findAllConnectedParticipants();
 }
