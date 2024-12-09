@@ -2,17 +2,19 @@ package ru.danilakondr.testsystem.data;
 
 import jakarta.persistence.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.*;
+import org.springframework.security.core.AuthenticatedPrincipal;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSession {
+public class UserSession implements Principal {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)
     private UUID id;
@@ -24,4 +26,9 @@ public class UserSession {
     private LocalDateTime loginDate;
 
     private LocalDateTime expires;
+
+    @Override
+    public String getName() {
+        return user.getUsername();
+    }
 }

@@ -20,6 +20,7 @@ import ru.danilakondr.testsystem.services.TestService;
 import ru.danilakondr.testsystem.services.UserService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -52,11 +53,11 @@ public class OrganizatorController {
 
     @PostMapping("/api/changePassword")
     public ResponseEntity<Response> changePassword(@RequestBody ChangePasswordRequest request) {
-        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        final UserSession principal = (UserSession) auth.getPrincipal();
-        final User user = principal.getUser();
+        final Optional<User> user = UserUtils.getCurrentUser();
+        if (user.isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.Error.INVALID_REQUEST);
 
-        userService.changePassword(user, request.getNewPassword());
+        userService.changePassword(user.get(), request.getNewPassword());
         return ResponseEntity.noContent().build();
     }
 

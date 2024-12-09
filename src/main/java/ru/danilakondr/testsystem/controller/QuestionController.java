@@ -14,6 +14,7 @@ import ru.danilakondr.testsystem.services.TestService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,17 +22,25 @@ public class QuestionController {
     private final QuestionService questionService;
     private final TestService testService;
 
-    // TODO implement get questions for participants
     @GetMapping("/api/question/{id}")
     public ResponseEntity<Response> getQuestionInfo(@PathVariable("id") String questionIdStr) {
-        final User currentUser = UserUtils.getCurrentUser();
-
         long questionId = Long.parseUnsignedLong(questionIdStr);
         Question question = questionService.get(questionId);
-        if (question == null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
-        if (!question.isOwnedBy(currentUser))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        final Optional<User> currentUser = UserUtils.getCurrentUser();
+        if (currentUser.isPresent()) {
+            if (!question.isOwnedBy(currentUser.get()))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+        }
+        else {
+            Optional<Participant> participant = UserUtils.getCurrentParticipant();
+            if (participant.isEmpty())
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+            Test test = participant.get().getTestSession().getTest();
+            if (question.getTest().getId() != test.getId())
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+        }
 
         Description.Question descr = new Description.Question(question);
         return ResponseEntity.ok(new Response.Description(descr));
@@ -39,9 +48,13 @@ public class QuestionController {
 
     @PutMapping("/api/question")
     public ResponseEntity<Response> putQuestion(@RequestBody QuestionBody req, @RequestHeader("Host") String host) {
+        final Optional<User> currentUser = UserUtils.getCurrentUser();
+        if (currentUser.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
         Test test = testService.get(req.getTestId());
-        if (test == null)
-            return ResponseEntity.badRequest().build();
+        if (!test.isOwnedBy(currentUser.get()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         List<AnswerVariant> variants = req.getVariants().stream()
                 .map(
@@ -58,13 +71,13 @@ public class QuestionController {
 
     @PatchMapping("/api/question/{id}")
     public ResponseEntity<Response> patchQuestion(@RequestBody QuestionBody req, @PathVariable("id") String questionIdStr) {
-        final User currentUser = UserUtils.getCurrentUser();
+        final Optional<User> currentUser = UserUtils.getCurrentUser();
+        if (currentUser.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         long questionId = Long.parseUnsignedLong(questionIdStr);
         Question question = questionService.get(questionId);
-        if (question == null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
-        if (!question.isOwnedBy(currentUser))
+        if (!question.isOwnedBy(currentUser.get()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         List<AnswerVariant> variants = req.getVariants().stream()
@@ -78,13 +91,13 @@ public class QuestionController {
 
     @DeleteMapping("/api/question/{id}")
     public ResponseEntity<Response> deleteQuestion(@PathVariable("id") String questionIdStr) {
-        final User currentUser = UserUtils.getCurrentUser();
+        final Optional<User> currentUser = UserUtils.getCurrentUser();
+        if (currentUser.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         long questionId = Long.parseUnsignedLong(questionIdStr);
         Question question = questionService.get(questionId);
-        if (question == null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
-        if (!question.isOwnedBy(currentUser))
+        if (!question.isOwnedBy(currentUser.get()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         questionService.remove(question);
