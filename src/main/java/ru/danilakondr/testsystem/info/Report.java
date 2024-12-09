@@ -1,7 +1,10 @@
 package ru.danilakondr.testsystem.info;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Report {
     public record Answer(long testId,
@@ -11,22 +14,16 @@ public class Report {
                          String answerVariantText,
                          boolean correct) {}
 
-    private final long participantId;
+    @Getter
+    private final UUID participantId;
+    @Getter
     private final String participantName;
     private final List<Answer> answers;
 
-    public Report(long participantId, String participantName) {
+    public Report(UUID participantId, String participantName) {
         answers = new ArrayList<>();
         this.participantId = participantId;
         this.participantName = participantName;
-    }
-
-    public long getParticipantId() {
-        return participantId;
-    }
-
-    public String getParticipantName() {
-        return participantName;
     }
 
     public Answer getAnswer(int index) {
