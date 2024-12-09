@@ -15,7 +15,12 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestSession {
+public class TestSession implements Ownable {
+    @Override
+    public boolean isOwnedBy(User user) {
+        return this.test.isOwnedBy(user);
+    }
+
     @JsonFormat(shape=JsonFormat.Shape.STRING)
     public enum State {
         NOT_ACTIVE,
