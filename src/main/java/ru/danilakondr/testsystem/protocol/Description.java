@@ -18,6 +18,8 @@ import java.util.UUID;
         , @JsonSubTypes.Type(value=Description.Question.class, name="QUESTION")
         , @JsonSubTypes.Type(value=Description.AnswerVariant.class, name="VARIANT")
         , @JsonSubTypes.Type(value=Description.TestSession.class, name="TEST_SESSION")
+        , @JsonSubTypes.Type(value=Description.Answer.class, name="ANSWER")
+        , @JsonSubTypes.Type(value=Description.Participant.class, name="PARTICIPANT")
 })
 public abstract class Description {
     @EqualsAndHashCode(callSuper = true)
@@ -85,6 +87,34 @@ public abstract class Description {
             this.state = session.getTestSessionState();
             this.begin = session.getBegin();
             this.end = session.getEnd();
+        }
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @AllArgsConstructor
+    public static class Answer extends Description {
+        long questionId;
+        long variantId;
+        String text;
+
+        public Answer(ru.danilakondr.testsystem.data.Answer answer) {
+            this.questionId = answer.getQuestion().getId();
+            this.variantId = answer.getVariant().getId();
+            this.text = answer.getText();
+        }
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @AllArgsConstructor
+    public static class Participant extends Description {
+        String name;
+        UUID testSessionId;
+
+        public Participant(ru.danilakondr.testsystem.data.Participant participant) {
+            this.name = participant.getName();
+            this.testSessionId = participant.getTestSession().getId();
         }
     }
 }

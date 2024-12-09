@@ -12,6 +12,7 @@ import java.util.List;
         , @JsonSubTypes.Type(value= Response.Error.class, name="ERROR")
         , @JsonSubTypes.Type(value= Response.Description.class, name="DESCRIPTION")
         , @JsonSubTypes.Type(value= Response.DescriptionList.class, name="LIST")
+         , @JsonSubTypes.Type(value= Response.Participant.class, name="PARTICIPANT")
 })
 public abstract class Response {
     @Getter
@@ -46,5 +47,13 @@ public abstract class Response {
     @AllArgsConstructor
     public static class DescriptionList extends Response {
         List<ru.danilakondr.testsystem.protocol.Description> descriptions;
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @AllArgsConstructor
+    public static class Participant extends Response {
+        String sessionKey;
+        List<ru.danilakondr.testsystem.protocol.Description.Question> questions;
     }
 }
