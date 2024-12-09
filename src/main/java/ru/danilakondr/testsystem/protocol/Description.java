@@ -8,13 +8,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, property="description_type", visible = true)
 @JsonSubTypes({
           @JsonSubTypes.Type(value=Description.Test.class, name="TEST")
         , @JsonSubTypes.Type(value=Description.Question.class, name="QUESTION")
         , @JsonSubTypes.Type(value=Description.AnswerVariant.class, name="VARIANT")
+        , @JsonSubTypes.Type(value=Description.TestSession.class, name="TEST_SESSION")
 })
 public abstract class Description {
     @EqualsAndHashCode(callSuper = true)
@@ -64,6 +67,24 @@ public abstract class Description {
             this.id = test.getId();
             this.name = test.getName();
             this.questions = test.getQuestions().stream().map(Question::new).toList();
+        }
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @AllArgsConstructor
+    public static class TestSession extends Description {
+        UUID id;
+        long testId;
+        ru.danilakondr.testsystem.data.TestSession.State state;
+        LocalDateTime begin, end;
+
+        public TestSession(ru.danilakondr.testsystem.data.TestSession session)  {
+            this.id = session.getId();
+            this.testId = session.getTest().getId();
+            this.state = session.getTestSessionState();
+            this.begin = session.getBegin();
+            this.end = session.getEnd();
         }
     }
 }
