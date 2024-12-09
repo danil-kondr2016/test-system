@@ -14,9 +14,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import ru.danilakondr.testsystem.dao.UserDAO;
 import ru.danilakondr.testsystem.dao.UserSessionDAO;
+import ru.danilakondr.testsystem.data.Participant;
 import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.data.UserSession;
 import ru.danilakondr.testsystem.exception.InvalidCredentialsException;
+import ru.danilakondr.testsystem.services.ParticipantService;
 import ru.danilakondr.testsystem.services.UserService;
 
 import java.io.IOException;
@@ -31,19 +33,35 @@ public class AuthFilter extends GenericFilterBean {
     @Autowired
     private UserService service;
 
+    @Autowired
+    private ParticipantService participantService;
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         final String tokenString = getTokenFromString((HttpServletRequest) servletRequest);
         if (tokenString != null) {
-            final UUID uuidToken = UuidCreator.fromString(tokenString);
-            final Optional<UserSession> session = service.authenticate(uuidToken);
-            if (session.isEmpty()) {
-                throw new InvalidCredentialsException("INVALID_CREDENTIALS");
-            }
+            if (tokenString.startsWith("PART:")) {
+                final UUID uuidParticipantId = UuidCreator.fromString(tokenString.substring(4));
+                final Optional<Participant> participant = participantService.get(uuidParticipantId);
+                if (participant.isEmpty())
+                    throw new InvalidCredentialsException("INVALID_CREDENTIALS");
 
-            UserAuthentication authentication = new UserAuthentication(session.get());
-            authentication.setAuthenticated(true);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                ParticipantAuthentication authentication = new ParticipantAuthentication();
+                authentication.setPrincipal(participant.get());
+                authentication.setAuthenticated(true);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            else {
+                final UUID uuidToken = UuidCreator.fromString(tokenString);
+                final Optional<UserSession> session = service.authenticate(uuidToken);
+                if (session.isEmpty()) {
+                    throw new InvalidCredentialsException("INVALID_CREDENTIALS");
+                }
+
+                UserAuthentication authentication = new UserAuthentication(session.get());
+                authentication.setAuthenticated(true);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
@@ -51,7 +69,7 @@ public class AuthFilter extends GenericFilterBean {
     private String getTokenFromString(HttpServletRequest request) {
         final String authorization = request.getHeader(AUTHORIZATION);
         if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
-            return authorization.substring(7);
+            return authorization.substring(7).trim();
         }
         return null;
     }
