@@ -1,5 +1,6 @@
 package ru.danilakondr.testsystem.services;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,9 @@ public class TestSessionServiceImpl implements TestSessionService {
 
     @Override
     @Transactional
-    public TestSession create(User user, Test test) {
+    public TestSession create(Test test) {
         TestSession session = new TestSession();
+        session.setId(UuidCreator.getTimeOrderedEpoch());
         session.setTest(test);
         session.setTestSessionState(TestSession.State.ACTIVE);
         session.setBegin(LocalDateTime.now());

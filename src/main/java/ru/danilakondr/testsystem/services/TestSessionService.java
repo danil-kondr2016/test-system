@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TestSessionService {
-    TestSession create(User user, Test test);
+     TestSession create(Test test);
     TestSession get(UUID testSessionId);
     void remove(TestSession testSession);
     Report loadReport(Participant participant);
