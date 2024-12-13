@@ -52,4 +52,15 @@ public class ParticipantServiceImpl implements ParticipantService {
         answer.setParticipant(participant);
         answerDAO.save(answer);
     }
+
+    @Override
+    public boolean validate(Participant participant) {
+        if (participant == null)
+            return false;
+
+        if (participant.getTestSession().getTestSessionState() != TestSession.State.ACTIVE)
+            return false;
+
+        return true;
+    }
 }

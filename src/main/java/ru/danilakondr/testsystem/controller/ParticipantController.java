@@ -51,6 +51,8 @@ public class ParticipantController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Response.Error.RESOURCE_NOT_FOUND);
         if (!participant.get().getTestSession().isOwnedBy(currentUser.get()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+        if (!participantService.validate(participant.get()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         Response.Description response = new Response.Description(new Description.Participant(participant.get()));
         return ResponseEntity.ok(response);
@@ -61,9 +63,7 @@ public class ParticipantController {
         final Optional<Participant> participant = UserUtils.getCurrentParticipant();
         if (participant.isEmpty())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
-
-        UUID participantId = UuidCreator.fromString(id);
-        if (participant.get().getId().compareTo(participantId) != 0)
+        if (!participantService.validate(participant.get()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         Question question = questionService.get(request.getQuestionId());
