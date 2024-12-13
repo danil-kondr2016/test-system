@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.*;
-import org.springframework.security.core.AuthenticatedPrincipal;
 
 @Entity
 @Getter
