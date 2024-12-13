@@ -37,16 +37,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     @Transactional
     public Optional<Participant> get(UUID participantId) {
-        Participant participant;
-
-        try {
-            participant = participantDAO.getReferenceById(participantId);
-        }
-        catch (EntityNotFoundException e) {
-            return Optional.empty();
-        }
-
-        return Optional.of(participant);
+        return participantDAO.findById(participantId);
     }
 
     @Override
