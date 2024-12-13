@@ -28,7 +28,6 @@ public class TestSession implements Ownable {
         COMPLETED,
     }
     @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
