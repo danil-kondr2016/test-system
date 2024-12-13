@@ -81,4 +81,16 @@ public class ParticipantController {
         participantService.putAnswer(participant.get(), answer);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/api/participant/complete")
+    public ResponseEntity<Response> complete() {
+        final Optional<Participant> participant = UserUtils.getCurrentParticipant();
+        if (participant.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+        if (!participantService.validate(participant.get()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        participantService.complete(participant.get().getId());
+        return ResponseEntity.noContent().build();
+    }
 }

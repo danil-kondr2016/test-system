@@ -14,6 +14,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Participant {
+    public enum State {
+        ACTIVE,
+        COMPLETED
+    }
+
     @Id
     private UUID id;
 
@@ -21,4 +26,6 @@ public class Participant {
     private TestSession testSession;
 
     private String name;
+
+    private State state;
 }

@@ -12,5 +12,6 @@ public interface ParticipantService {
     Optional<Participant> get(UUID participantId);
     void remove(Participant participant);
     void putAnswer(Participant participant, Answer answer);
+    void complete(UUID participantId);
     boolean validate(Participant participant);
 }

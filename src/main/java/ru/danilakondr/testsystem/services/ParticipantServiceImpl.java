@@ -46,6 +46,12 @@ public class ParticipantServiceImpl implements ParticipantService {
         participantDAO.delete(participant);
     }
 
+    @Transactional
+    public void complete(UUID participantId) {
+        Participant participant = participantDAO.getReferenceById(participantId);
+        participant.setState(Participant.State.COMPLETED);
+    }
+
     @Override
     @Transactional
     public void putAnswer(Participant participant, Answer answer) {
@@ -59,6 +65,9 @@ public class ParticipantServiceImpl implements ParticipantService {
             return false;
 
         if (participant.getTestSession().getTestSessionState() != TestSession.State.ACTIVE)
+            return false;
+
+        if (participant.getState() == Participant.State.COMPLETED)
             return false;
 
         return true;
