@@ -38,7 +38,7 @@ public class AuthFilter extends GenericFilterBean {
         final String tokenString = getTokenFromString((HttpServletRequest) servletRequest);
         if (tokenString != null) {
             if (tokenString.startsWith("PART:")) {
-                final UUID uuidParticipantId = UuidCreator.fromString(tokenString.substring(4));
+                final UUID uuidParticipantId = UuidCreator.fromString(tokenString.substring(5));
                 final Optional<Participant> participant = participantService.get(uuidParticipantId);
                 if (participant.isEmpty())
                     throw new InvalidCredentialsException("INVALID_CREDENTIALS");
