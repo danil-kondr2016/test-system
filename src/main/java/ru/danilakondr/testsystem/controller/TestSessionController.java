@@ -61,4 +61,17 @@ public class TestSessionController {
         TestSession session = testSessionService.create(test);
         return ResponseEntity.created(URI.create("http://"+host+"/api/testSession/"+session.getId().toString())).build();
     }
+
+    @PostMapping("/api/testSession/{id}/complete")
+    public ResponseEntity<Response> completeTestSession(@PathVariable String id) {
+        final Optional<User> user = UserUtils.getCurrentUser();
+        if (user.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        UUID sessionId = UuidCreator.fromString(id);
+        TestSession session = testSessionService.get(sessionId);
+        session.setTestSessionState(TestSession.State.COMPLETED);
+
+        return ResponseEntity.noContent().build();
+    }
 }
