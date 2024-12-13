@@ -61,7 +61,7 @@ public class OrganizatorController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/api/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<Response> logout()
     {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
