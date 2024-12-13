@@ -58,8 +58,8 @@ public class ParticipantController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/api/participant/{id}/answer")
-    public ResponseEntity<Response> putAnswer(@PathVariable String id, @RequestBody AnswerBody request) {
+    @PutMapping("/api/participant/answer")
+    public ResponseEntity<Response> putAnswer(@RequestBody AnswerBody request) {
         final Optional<Participant> participant = UserUtils.getCurrentParticipant();
         if (participant.isEmpty())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
@@ -67,7 +67,7 @@ public class ParticipantController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
         Question question = questionService.get(request.getQuestionId());
-        AnswerVariant variant;
+
         Answer answer = new Answer();
 
         Optional<AnswerVariant> optVariant = question.getVariants().stream()
@@ -78,6 +78,7 @@ public class ParticipantController {
         answer.setParticipant(participant.get());
         answer.setText(request.getText());
         answer.setQuestion(question);
+
         participantService.putAnswer(participant.get(), answer);
         return ResponseEntity.noContent().build();
     }
