@@ -13,16 +13,19 @@ import ru.danilakondr.testsystem.data.User;
 import ru.danilakondr.testsystem.protocol.Description;
 import ru.danilakondr.testsystem.protocol.Response;
 import ru.danilakondr.testsystem.protocol.TestSessionBody;
+import ru.danilakondr.testsystem.services.ParticipantService;
 import ru.danilakondr.testsystem.services.TestService;
 import ru.danilakondr.testsystem.services.TestSessionService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
 public class TestSessionController {
+    private final ParticipantService participantService;
     private final TestSessionService testSessionService;
     private final TestService testService;
 
@@ -60,6 +63,25 @@ public class TestSessionController {
 
         TestSession session = testSessionService.create(test);
         return ResponseEntity.created(URI.create("http://"+host+"/api/testSession/"+session.getId().toString())).build();
+    }
+
+    @GetMapping("/api/testSession/{id}/participants")
+    public ResponseEntity<Response> getParticipants(@PathVariable String id) {
+        final Optional<User> user = UserUtils.getCurrentUser();
+        if (user.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        UUID sessionId = UuidCreator.fromString(id);
+        TestSession session = testSessionService.get(sessionId);
+        if (!session.isOwnedBy(user.get()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        List<Description.Participant> descriptors = participantService.getByTestSession(session)
+                .stream()
+                .map(Description.Participant::new)
+                .toList();
+
+        return ResponseEntity.ok(new Response.DescriptionList(descriptors));
     }
 
     @PostMapping("/api/testSession/{id}/complete")

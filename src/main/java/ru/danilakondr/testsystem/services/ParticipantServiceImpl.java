@@ -1,7 +1,6 @@
 package ru.danilakondr.testsystem.services;
 
 import com.github.f4b6a3.uuid.UuidCreator;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import ru.danilakondr.testsystem.data.Answer;
 import ru.danilakondr.testsystem.data.Participant;
 import ru.danilakondr.testsystem.data.TestSession;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,5 +71,10 @@ public class ParticipantServiceImpl implements ParticipantService {
             return false;
 
         return true;
+    }
+
+    @Override
+    public List<Participant> getByTestSession(TestSession session) {
+        return participantDAO.getByTestSession(session);
     }
 }
