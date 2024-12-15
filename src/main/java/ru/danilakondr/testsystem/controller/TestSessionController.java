@@ -10,6 +10,7 @@ import ru.danilakondr.testsystem.data.Participant;
 import ru.danilakondr.testsystem.data.Test;
 import ru.danilakondr.testsystem.data.TestSession;
 import ru.danilakondr.testsystem.data.User;
+import ru.danilakondr.testsystem.info.Report;
 import ru.danilakondr.testsystem.protocol.Description;
 import ru.danilakondr.testsystem.protocol.Response;
 import ru.danilakondr.testsystem.protocol.TestSessionBody;
@@ -98,5 +99,23 @@ public class TestSessionController {
         session.setTestSessionState(TestSession.State.COMPLETED);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/api/testSession/{id}/reportAll.json")
+    public ResponseEntity<Response> loadReport(@PathVariable String id) {
+        final Optional<User> user = UserUtils.getCurrentUser();
+        if (user.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        UUID sessionId = UuidCreator.fromString(id);
+        TestSession session = testSessionService.get(sessionId);
+        if (!session.isOwnedBy(user.get()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        List<Report> reports = participantService.getByTestSession(session).stream()
+                .map(testSessionService::loadReport)
+                .toList();
+        Response.ReportAll response = new Response.ReportAll(reports);
+        return ResponseEntity.ok(response);
     }
 }

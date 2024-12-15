@@ -3,6 +3,7 @@ package ru.danilakondr.testsystem.protocol;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
+import ru.danilakondr.testsystem.info.Report;
 
 import java.util.List;
 
@@ -12,7 +13,8 @@ import java.util.List;
         , @JsonSubTypes.Type(value= Response.Error.class, name="ERROR")
         , @JsonSubTypes.Type(value= Response.Description.class, name="DESCRIPTION")
         , @JsonSubTypes.Type(value= Response.DescriptionList.class, name="LIST")
-         , @JsonSubTypes.Type(value= Response.Participant.class, name="PARTICIPANT")
+        , @JsonSubTypes.Type(value= Response.Participant.class, name="PARTICIPANT")
+        , @JsonSubTypes.Type(value= Response.ReportAll.class, name="REPORT_ALL")
 })
 public abstract class Response {
     @Getter
@@ -55,5 +57,12 @@ public abstract class Response {
     public static class Participant extends Response {
         String sessionKey;
         List<ru.danilakondr.testsystem.protocol.Description.Question> questions;
+    }
+
+    @AllArgsConstructor
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class ReportAll extends Response {
+        List<Report> reports;
     }
 }
