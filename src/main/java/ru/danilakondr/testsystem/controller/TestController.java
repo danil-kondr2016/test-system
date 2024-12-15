@@ -22,8 +22,8 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping("/api/test/{id}")
-    public ResponseEntity<Response> getTestInfo(@PathVariable("id") String testIdStr) {
-        long testId = Long.parseUnsignedLong(testIdStr);
+    public ResponseEntity<Response> getTestInfo(@PathVariable String id) {
+        long testId = Long.parseUnsignedLong(id);
         Test test = testService.get(testId);
 
         final Optional<User> currentUser = UserUtils.getCurrentUser();
@@ -56,12 +56,12 @@ public class TestController {
     }
 
     @PatchMapping("/api/test/{id}")
-    public ResponseEntity<Response> patchTest(@RequestBody TestBody request, @PathVariable("id") String testIdStr) {
+    public ResponseEntity<Response> patchTest(@RequestBody TestBody request, @PathVariable String id) {
         final Optional<User> currentUser = UserUtils.getCurrentUser();
         if (currentUser.isEmpty())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
-        long testId = Long.parseUnsignedLong(testIdStr);
+        long testId = Long.parseUnsignedLong(id);
         Test test = testService.get(testId);
         if (!test.isOwnedBy(currentUser.get())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
@@ -72,12 +72,12 @@ public class TestController {
     }
 
     @DeleteMapping("/api/test/{id}")
-    public ResponseEntity<Response> deleteTest(@PathVariable("id") String testIdStr) {
+    public ResponseEntity<Response> deleteTest(@PathVariable String id) {
         final Optional<User> currentUser = UserUtils.getCurrentUser();
         if (currentUser.isEmpty())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
-        long testId = Long.parseUnsignedLong(testIdStr);
+        long testId = Long.parseUnsignedLong(id);
         Test test = testService.get(testId);
         if (!test.isOwnedBy(currentUser.get())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);

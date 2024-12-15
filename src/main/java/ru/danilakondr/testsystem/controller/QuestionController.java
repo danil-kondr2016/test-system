@@ -23,8 +23,8 @@ public class QuestionController {
     private final TestService testService;
 
     @GetMapping("/api/question/{id}")
-    public ResponseEntity<Response> getQuestionInfo(@PathVariable("id") String questionIdStr) {
-        long questionId = Long.parseUnsignedLong(questionIdStr);
+    public ResponseEntity<Response> getQuestionInfo(@PathVariable String id) {
+        long questionId = Long.parseUnsignedLong(id);
         Question question = questionService.get(questionId);
 
         final Optional<User> currentUser = UserUtils.getCurrentUser();
@@ -70,12 +70,12 @@ public class QuestionController {
     }
 
     @PatchMapping("/api/question/{id}")
-    public ResponseEntity<Response> patchQuestion(@RequestBody QuestionBody req, @PathVariable("id") String questionIdStr) {
+    public ResponseEntity<Response> patchQuestion(@RequestBody QuestionBody req, @PathVariable String id) {
         final Optional<User> currentUser = UserUtils.getCurrentUser();
         if (currentUser.isEmpty())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
-        long questionId = Long.parseUnsignedLong(questionIdStr);
+        long questionId = Long.parseUnsignedLong(id);
         Question question = questionService.get(questionId);
         if (!question.isOwnedBy(currentUser.get()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
@@ -90,12 +90,12 @@ public class QuestionController {
     }
 
     @DeleteMapping("/api/question/{id}")
-    public ResponseEntity<Response> deleteQuestion(@PathVariable("id") String questionIdStr) {
+    public ResponseEntity<Response> deleteQuestion(@PathVariable String id) {
         final Optional<User> currentUser = UserUtils.getCurrentUser();
         if (currentUser.isEmpty())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
 
-        long questionId = Long.parseUnsignedLong(questionIdStr);
+        long questionId = Long.parseUnsignedLong(id);
         Question question = questionService.get(questionId);
         if (!question.isOwnedBy(currentUser.get()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
