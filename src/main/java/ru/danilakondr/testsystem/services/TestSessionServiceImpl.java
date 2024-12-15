@@ -49,7 +49,8 @@ public class TestSessionServiceImpl implements TestSessionService {
     public Report loadReport(Participant participant) {
         TestSession session = participant.getTestSession();
         List<Answer> answers = answerDAO.findByParticipant(participant);
-        Report report = new Report(participant.getId(), participant.getName(), session.getTest().getId());
+        Report report = new Report(participant.getId(), participant.getName(),
+                session.getTest().getId(), session.getTest().getName());
         for (Answer answer: answers) {
             Question question = answer.getQuestion();
             Report.Answer reportAnswer = extractAnswer(answer, question, session);

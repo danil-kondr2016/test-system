@@ -21,13 +21,17 @@ public class Report {
     @Getter
     @JsonSerialize(as=String.class)
     private final long testId;
+    @Getter
+    private final String testName;
+
     private final List<Answer> answers;
 
-    public Report(UUID participantId, String participantName, long testId) {
+    public Report(UUID participantId, String participantName, long testId, String testName) {
         answers = new ArrayList<>();
         this.participantId = participantId;
         this.participantName = participantName;
         this.testId = testId;
+        this.testName = testName;
     }
 
     public Answer getAnswer(int index) {
