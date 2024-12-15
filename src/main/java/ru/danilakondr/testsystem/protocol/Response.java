@@ -46,7 +46,7 @@ public abstract class Response {
     @Data
     @AllArgsConstructor
     public static class DescriptionList extends Response {
-        List<ru.danilakondr.testsystem.protocol.Description> descriptions;
+        List<? extends ru.danilakondr.testsystem.protocol.Description> descriptions;
     }
 
     @EqualsAndHashCode(callSuper = true)
