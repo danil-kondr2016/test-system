@@ -67,13 +67,13 @@ public class TestSessionServiceImpl implements TestSessionService {
         boolean correct = false;
         for (AnswerVariant variant: variants) {
             // Check for selection types
-            if (answer.getVariant() == variant && variant.isCorrect()) {
+            if (answer.getVariant().getId() == variant.getId() && variant.isCorrect()) {
                 correct = true;
                 break;
             }
 
             // Check for text equality
-            if (variant.getText().equals(answer.getText())) {
+            if (variant.getText().equals(answer.getText()) && variant.isCorrect()) {
                 correct = true;
                 break;
             }
