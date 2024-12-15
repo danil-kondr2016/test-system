@@ -1,6 +1,7 @@
 package ru.danilakondr.testsystem.info;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -8,9 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class Report {
-    public record Answer(@JsonSerialize(as=String.class) long questionId,
+    public record Answer(@JsonSerialize(using= ToStringSerializer.class) long questionId,
                          String questionText,
-                         @JsonSerialize(as=String.class) long answerVariantId,
+                         @JsonSerialize(using= ToStringSerializer.class) long answerVariantId,
                          String answerVariantText,
                          boolean correct) {}
 
@@ -19,11 +20,11 @@ public class Report {
     @Getter
     private final String participantName;
     @Getter
-    @JsonSerialize(as=String.class)
+    @JsonSerialize(using= ToStringSerializer.class)
     private final long testId;
     @Getter
     private final String testName;
-
+    @Getter
     private final List<Answer> answers;
 
     public Report(UUID participantId, String participantName, long testId, String testName) {
