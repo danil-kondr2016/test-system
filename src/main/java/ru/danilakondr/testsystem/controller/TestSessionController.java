@@ -70,6 +70,9 @@ public class TestSessionController {
 
         UUID sessionId = UuidCreator.fromString(id);
         TestSession session = testSessionService.get(sessionId);
+        if (!session.isOwnedBy(user.get()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
         session.setTestSessionState(TestSession.State.COMPLETED);
 
         return ResponseEntity.noContent().build();
