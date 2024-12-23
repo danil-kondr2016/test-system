@@ -84,6 +84,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/myTests").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/test/*", "/api/question/*", "/api/testSession/*").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/test/*", "/api/question/*", "/api/testSession/*").authenticated()
+                         .requestMatchers(HttpMethod.PATCH, "/api/test/*/reorderQuestions").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/test/*", "/api/question/*", "/api/testSession/*").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/test", "/api/question", "/api/testSession").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/participant/*").hasAnyAuthority("ORGANIZATOR", "ADMINISTRATOR")
