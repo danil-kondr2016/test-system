@@ -49,6 +49,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional
     public void reorderQuestions(Test test, long[] questionIds) {
         if (questionIds.length != test.getQuestions().size())
             throw new IllegalArgumentException("questionIds.length != test.getQuestions().size()");
