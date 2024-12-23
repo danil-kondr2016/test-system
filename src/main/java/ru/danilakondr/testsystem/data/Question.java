@@ -39,6 +39,8 @@ public class Question implements Ownable {
 
     private String text;
 
+    private long order;
+
     @OneToMany(cascade=CascadeType.ALL, mappedBy="question")
     private List<AnswerVariant> variants;
 }

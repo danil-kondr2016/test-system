@@ -68,7 +68,9 @@ public abstract class Description {
         public Test(ru.danilakondr.testsystem.data.Test test) {
             this.id = test.getId();
             this.name = test.getName();
-            this.questions = test.getQuestions().stream().map(Question::new).toList();
+            this.questions = test.getQuestions().stream()
+                    .sorted((a, b) -> Long.compareUnsigned(a.getOrder(), b.getOrder()))
+                    .map(Question::new).toList();
         }
     }
 

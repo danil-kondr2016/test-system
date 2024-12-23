@@ -29,6 +29,13 @@ public class QuestionServiceImpl implements QuestionService {
         question.setVariants(variants);
         variants.forEach(x -> x.setQuestion(question));
 
+        long newOrder = questionDAO.streamByTestOrderByOrderAsc(test)
+                .mapToLong(Question::getOrder)
+                .reduce((a, b) -> (Long.compareUnsigned(a, b) > 0) ? a : b)
+                .orElse(0)
+                + 1;
+        question.setOrder(newOrder);
+
         questionDAO.save(question);
         return question;
     }
