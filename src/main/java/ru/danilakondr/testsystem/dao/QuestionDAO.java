@@ -9,5 +9,5 @@ import java.util.stream.Stream;
 
 public interface QuestionDAO extends JpaRepository<Question, Long> {
     List<Question> getByTest(Test test);
-    Stream<Question> streamByTestOrderByOrderAsc(Test test);
+    Stream<Question> streamByTestOrderByOrderDesc(Test test);
 }
