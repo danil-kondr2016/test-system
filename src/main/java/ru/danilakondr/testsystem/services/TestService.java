@@ -10,4 +10,5 @@ public interface TestService {
     Test get(long testId);
     void remove(Test test);
     List<Test> getByUser(User user);
+    void reorderQuestions(Test test, long[] questionIds);
 }

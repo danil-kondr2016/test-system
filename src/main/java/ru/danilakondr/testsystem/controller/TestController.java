@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import ru.danilakondr.testsystem.data.Participant;
 import ru.danilakondr.testsystem.data.Test;
 import ru.danilakondr.testsystem.data.User;
+import ru.danilakondr.testsystem.protocol.ReorderQuestionsRequest;
 import ru.danilakondr.testsystem.protocol.TestBody;
 import ru.danilakondr.testsystem.protocol.Description;
 import ru.danilakondr.testsystem.protocol.Response;
 import ru.danilakondr.testsystem.services.TestService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -67,6 +69,30 @@ public class TestController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
         }
         test.setName(request.getName());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/test/{id}/reorderQuestions")
+    public ResponseEntity<Response> reorderQuestions(@RequestBody ReorderQuestionsRequest request, @PathVariable String id) {
+        final Optional<User> currentUser = UserUtils.getCurrentUser();
+        if (currentUser.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+
+        long testId = Long.parseUnsignedLong(id);
+        Test test = testService.get(testId);
+        if (!test.isOwnedBy(currentUser.get())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Response.Error.PERMISSION_DENIED);
+        }
+
+        if (request.getQuestionIds().size() != test.getQuestions().size()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.Error.INVALID_REQUEST);
+        }
+
+        long[] questionIds = request.getQuestionIds().stream()
+                .mapToLong(Long::parseUnsignedLong)
+                .toArray();
+        testService.reorderQuestions(test, questionIds);
 
         return ResponseEntity.noContent().build();
     }

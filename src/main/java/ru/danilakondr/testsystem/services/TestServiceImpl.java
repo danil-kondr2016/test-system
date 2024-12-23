@@ -3,7 +3,9 @@ package ru.danilakondr.testsystem.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.danilakondr.testsystem.dao.QuestionDAO;
 import ru.danilakondr.testsystem.dao.TestDAO;
+import ru.danilakondr.testsystem.data.Question;
 import ru.danilakondr.testsystem.data.Test;
 import ru.danilakondr.testsystem.data.User;
 
@@ -13,6 +15,9 @@ import java.util.List;
 public class TestServiceImpl implements TestService {
     @Autowired
     private TestDAO testDAO;
+
+    @Autowired
+    private QuestionDAO questionDAO;
 
     @Override
     @Transactional
@@ -41,5 +46,17 @@ public class TestServiceImpl implements TestService {
     @Transactional
     public List<Test> getByUser(User user) {
         return testDAO.getByUser(user);
+    }
+
+    @Override
+    public void reorderQuestions(Test test, long[] questionIds) {
+        if (questionIds.length != test.getQuestions().size())
+            throw new IllegalArgumentException("questionIds.length != test.getQuestions().size()");
+
+        long order = 1;
+        for (long questionId : questionIds) {
+            Question question = questionDAO.getReferenceById(questionId);
+            question.setOrder(order++);
+        }
     }
 }
