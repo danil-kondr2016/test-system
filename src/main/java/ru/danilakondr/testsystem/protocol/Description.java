@@ -69,7 +69,12 @@ public abstract class Description {
             this.id = test.getId();
             this.name = test.getName();
             this.questions = test.getQuestions().stream()
-                    .sorted((a, b) -> Long.compareUnsigned(a.getOrder(), b.getOrder()))
+                    .sorted((a, b) -> {
+                        int sign1 = Long.compareUnsigned(a.getOrder(), b.getOrder());
+                        if (sign1 == 0)
+                            return Long.compareUnsigned(a.getId(), b.getId());
+                        return sign1;
+                    })
                     .map(Question::new).toList();
         }
     }
