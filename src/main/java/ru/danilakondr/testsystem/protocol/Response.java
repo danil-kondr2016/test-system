@@ -15,6 +15,7 @@ import java.util.List;
         , @JsonSubTypes.Type(value= Response.DescriptionList.class, name="LIST")
         , @JsonSubTypes.Type(value= Response.Participant.class, name="PARTICIPANT")
         , @JsonSubTypes.Type(value= Response.ReportAll.class, name="REPORT_ALL")
+        , @JsonSubTypes.Type(value= Response.SystemInfo.class, name="SYSTEM_INFO")
 })
 public abstract class Response {
     @Getter
@@ -64,5 +65,12 @@ public abstract class Response {
     @EqualsAndHashCode(callSuper = true)
     public static class ReportAll extends Response {
         List<Report> reports;
+    }
+
+    @AllArgsConstructor
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class SystemInfo extends Response {
+        ru.danilakondr.testsystem.info.SystemInfo systemInfo;
     }
 }
