@@ -1,5 +1,6 @@
 package ru.danilakondr.testsystem.protocol;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
@@ -17,6 +18,7 @@ import java.util.List;
         , @JsonSubTypes.Type(value= Response.ReportAll.class, name="REPORT_ALL")
         , @JsonSubTypes.Type(value= Response.SystemInfo.class, name="SYSTEM_INFO")
 })
+@JsonIgnoreProperties({"response_type"})
 public abstract class Response {
     @Getter
     @Setter
@@ -33,6 +35,7 @@ public abstract class Response {
 
     @EqualsAndHashCode(callSuper = true)
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class SessionKey extends Response {
         private String sessionKey;
@@ -40,6 +43,7 @@ public abstract class Response {
 
     @EqualsAndHashCode(callSuper = true)
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class Description extends Response {
         ru.danilakondr.testsystem.protocol.Description description;
@@ -47,6 +51,7 @@ public abstract class Response {
 
     @EqualsAndHashCode(callSuper = true)
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class DescriptionList extends Response {
         List<? extends ru.danilakondr.testsystem.protocol.Description> descriptions;
@@ -54,12 +59,14 @@ public abstract class Response {
 
     @EqualsAndHashCode(callSuper = true)
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class Participant extends Response {
         String sessionKey;
         List<ru.danilakondr.testsystem.protocol.Description.Question> questions;
     }
 
+    @NoArgsConstructor
     @AllArgsConstructor
     @Data
     @EqualsAndHashCode(callSuper = true)
@@ -67,6 +74,7 @@ public abstract class Response {
         List<Report> reports;
     }
 
+    @NoArgsConstructor
     @AllArgsConstructor
     @Data
     @EqualsAndHashCode(callSuper = true)
