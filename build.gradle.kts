@@ -31,6 +31,9 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("com.github.f4b6a3:uuid-creator:6.0.0")
+	testImplementation("com.icegreen:greenmail-spring:2.1.2")
+	testImplementation("com.icegreen:greenmail-junit5:2.1.2")
+	testImplementation("com.h2database:h2:2.3.232")
 }
 
 tasks.withType<Test> {
